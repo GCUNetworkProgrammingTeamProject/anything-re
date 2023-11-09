@@ -1,0 +1,21 @@
+package com.anything.gradproject.repository;
+
+import com.anything.gradproject.entity.Inquiry;
+import com.anything.gradproject.entity.Lectures;
+import com.anything.gradproject.entity.Member;
+import com.anything.gradproject.entity.Video;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
+    List<Inquiry> findByVideo(Video video);
+
+    List<Inquiry> findByVideoAndMember (Video video, Member member);
+
+    List<Inquiry> findByVideoAndInquiryIsSecret(Video video, boolean secret);
+
+    Inquiry findByInquirySeq(Long inquirySeq);
+}

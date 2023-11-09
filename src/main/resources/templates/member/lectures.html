@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <!-- head 부분의 내용을 추가할 수 있습니다. -->
+    <link rel="stylesheet" href="/css/style.css"> <!-- CSS 파일 연결 -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>강사 화면</title>
+</head>
+<body>
+<div class="container">
+
+    <form method="post" action="/user/lectures">
+        <ul>
+            <li>
+                <table class="tb tb_col">
+                    <colgroup>
+                        <col style="width:50px;"/><col style="width:7.5%;"/><col style="width:auto;"/><col style="width:10%;"/><col style="width:15%;"/><col style="width:7.5%;"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">강의 번호</th>
+                        <th scope="col">강의 이름</th>
+                        <th scope="col">강의 설명</th>
+                        <th scope="col">강의 이미지</th>
+                        <th scope="col">강의 순서</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${not #lists.isEmpty( lecturesList )}" th:each="row, status : ${lecturesList}">
+                        <td><input type="radio" name="selectedLectures" th:value="${row.lectureSeq}" checked="checked"/></td>
+                        <td th:text="${row.lectureSeq}"></td>
+                        <td th:text="${row.lectureName}"></td>
+                        <td th:text="${row.lectureContent}"></td>
+                        <td th:text="${row.lectureImage}"></td>
+                        <td th:text="${row.lectureIndex}"></td>
+                    </tr>
+
+                    <tr th:unless="${not #lists.isEmpty( lecturesList )}">
+                        <td colspan="5">
+                            <div class="no_data_msg">검색된 결과가 없습니다.</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            <li>
+                <button class="btn btn-primary">강의 보기</button>
+            </li>
+        </ul>
+    </form>
+
+</div>
+<p th:if="${errorMessage}" class="fieldError" th:text="${errorMessage}"></p>
+
+</body>
+</html>
+

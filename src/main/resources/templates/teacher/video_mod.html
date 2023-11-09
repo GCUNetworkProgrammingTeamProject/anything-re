@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <!-- head 부분의 내용을 추가할 수 있습니다. -->
+    <link rel="stylesheet" href="/css/style.css"> <!-- CSS 파일 연결 -->
+</head>
+<body>
+<div class="container">
+    <form th:action="${url}" role="form" method="post" th:object="${videoFormDto}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label th:for="videoName">영상 이름</label>
+            <input type="text" th:field="*{videoName}" class="form-control" placeholder="영상 제목을 입력해주세요.">
+        </div>
+        <div class="form-group">
+            <label th:for="videoIndex">영상 순서</label>
+            <input type="text" th:field="*{videoIndex}" class="form-control" placeholder="영상 제목을 입력해주세요.">
+        </div>
+        <div class="form-group">
+            <label th:for="videoContent">영상 내용</label>
+            <input type="file" th:field="*{videoContent}" accept="video/*" onchange="loadFile(this)">
+        </div>
+        <div class="form-group">
+			<label th:for="videoLectureData">강의 자료</label>
+            <input type="file" th:field="*{videoLectureData}" onchange="loadFile(this)">
+        </div>
+        <p th:if="${isError}" class="error">입력하지 않은 값이 있습니다.</p>
+        <p th:if="${isDupl}" class="error">영상 순서가 겹칩니다.</p>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-primar">전송</button>
+        </div>
+        <input type="hidden" th:value="${lectureSeq}" name="lectureSeq"/>
+        <input type="hidden" th:value="${video_Seq}" name="video_Seq"/>
+    </form>
+</div>
+
+
+<p th:if="${errorMessage}" class="fieldError" th:text="${errorMessage}"></p>
+
+</body>
+</html>
+
