@@ -24,6 +24,7 @@ import static org.thymeleaf.util.StringUtils.substring;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class TeacherController {
 
     private final LecturesRepository lecturesRepository;

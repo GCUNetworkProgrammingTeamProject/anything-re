@@ -50,12 +50,13 @@ public class SecurityConfig {
 
         http
                 .csrf().disable()
+                .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .requestMatchers("/", "/api/register", "/api/login**", "/api/**").permitAll()
+                .requestMatchers("/**").permitAll()
                 //.requestMatchers("/lectures/new/*")
                 //.hasAnyRole("LECTURER","ADMIN")
                 .requestMatchers("/admin/**")

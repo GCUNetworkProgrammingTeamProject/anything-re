@@ -59,6 +59,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtToken> loginSuccess(@RequestBody LoginRequestDto dto) {
+        System.out.println("로그인 요청 도착");
         JwtToken token = memberService.login(dto.getId(), dto.getPassword());
         return ResponseEntity.ok(token);
     }
@@ -66,6 +67,11 @@ public class MemberController {
     public ResponseEntity<Member> loginCheck(@RequestHeader("Authorization") String token) {
 
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByToken(token));
+    }
+    @GetMapping("/info")
+    public ResponseEntity<MemberInfoDto> getInfo(@RequestHeader("Authorization") String token) {
+        MemberInfoDto dto = MemberService.getInfo(memberService.findMemberByToken(token));
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     // 강의 상세 정보 출력

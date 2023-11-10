@@ -33,6 +33,13 @@ public class MemberService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    public static MemberInfoDto getInfo(Member memberByToken) {
+        MemberInfoDto dto = new MemberInfoDto();
+        dto.setRole(memberByToken.getRole().toString());
+        dto.setName(memberByToken.getName());
+        return dto;
+    }
+
 
     public JwtToken login(String id, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, password);

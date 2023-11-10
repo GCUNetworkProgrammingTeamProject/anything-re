@@ -9,7 +9,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:6009")
                 .allowedHeaders("Origin","Accept,X-Requested-With","Content-Type","Access-Control-Request-Method","Access-Control-Request-Headers","Authorization")
-                .allowedMethods("GET", "POST", "DELETE", "OPTION")
+                .allowedMethods("GET", "POST", "DELETE", "OPTIONS")
                 .allowCredentials(true);
 
     }
