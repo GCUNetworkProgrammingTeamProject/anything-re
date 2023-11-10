@@ -57,18 +57,18 @@ public class MemberController {
     private final MemberService memberService;
 
 
-    @PostMapping("/login")
+    @PostMapping("/login") //로그인
     public ResponseEntity<JwtToken> loginSuccess(@RequestBody LoginRequestDto dto) {
         System.out.println("로그인 요청 도착");
         JwtToken token = memberService.login(dto.getId(), dto.getPassword());
         return ResponseEntity.ok(token);
     }
-    @GetMapping("/loginCheck")
-    public ResponseEntity<Member> loginCheck(@RequestHeader("Authorization") String token) {
-
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByToken(token));
-    }
-    @GetMapping("/info")
+//    @GetMapping("/loginCheck") //
+//    public ResponseEntity<Member> loginCheck(@RequestHeader("Authorization") String token) {
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByToken(token));
+//    }
+    @GetMapping("/info") // 로그인 유저 정보 반환
     public ResponseEntity<MemberInfoDto> getInfo(@RequestHeader("Authorization") String token) {
         MemberInfoDto dto = MemberService.getInfo(memberService.findMemberByToken(token));
         return ResponseEntity.status(HttpStatus.OK).body(dto);
@@ -81,9 +81,6 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
-
-
-
 
 
     // 구매한 강의 목록 출력
@@ -132,9 +129,6 @@ public class MemberController {
         Video video = videoRepository.findByVideoSeq(videoSeq).get();
         return ResponseEntity.ok(video.getVideoLectureData());
     }
-
-
-
 
 
     // 영상의 문의 목록 출력
@@ -203,12 +197,6 @@ public class MemberController {
         List<InquiryAnswer> inquiryAnswerList = inquiryAnswerRepository.findByInquiry(inquiryRepository.findByInquirySeq(inquirySeq));
         return ResponseEntity.ok(inquiryAnswerList);
     }
-
-
-
-
-
-
 
     // 강의 평가 출력
     @GetMapping(value = "/users/lectures/review/{lectureSeq}")

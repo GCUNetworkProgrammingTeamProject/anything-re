@@ -24,7 +24,7 @@ import static org.thymeleaf.util.StringUtils.substring;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/t")
 public class TeacherController {
 
     private final LecturesRepository lecturesRepository;
@@ -175,11 +175,6 @@ public class TeacherController {
 
 
 
-
-
-
-
-
     // 질의응답 메인 페이지
     @GetMapping ("/lectures/{lectureSeq}/video/{videoSeq}")
     public ResponseEntity<List<Inquiry>> printInquiry(@PathVariable long videoSeq) {
@@ -188,11 +183,6 @@ public class TeacherController {
 
         return ResponseEntity.ok(inquiryList);
     }
-
-
-
-
-
 
 
     // 답변 확인

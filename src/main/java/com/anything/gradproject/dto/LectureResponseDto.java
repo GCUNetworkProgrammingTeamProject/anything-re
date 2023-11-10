@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class LectureResponseDto {
+
     private String title;
     private long id;
     private String desc;
@@ -12,7 +13,5 @@ public class LectureResponseDto {
     private String imageSrc;
     private boolean paid;
     private String authorName;
-
-
 
 }
