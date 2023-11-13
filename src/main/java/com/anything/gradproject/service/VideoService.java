@@ -2,6 +2,7 @@ package com.anything.gradproject.service;
 
 import com.anything.gradproject.dto.LecturesFormDto;
 import com.anything.gradproject.dto.VideoFormDto;
+import com.anything.gradproject.dto.VideoResponseDto;
 import com.anything.gradproject.entity.Lectures;
 import com.anything.gradproject.entity.Member;
 import com.anything.gradproject.entity.Video;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -80,4 +82,22 @@ public class VideoService {
     }
 
 
+    public List<VideoResponseDto> findVideo(long lectureSeq) {
+        List<Long> videoSeqList;
+        List<Video> videoList = videoRepository.findByLectures_LectureSeq(lectureSeq);
+        return videoList.stream()
+                .map(this::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    public VideoResponseDto entityToDto(Video video) {
+        VideoResponseDto dto = new VideoResponseDto();
+        dto.setDuration(video.getVideoLength());
+        dto.setVideoSrc(video.getVideoContent());
+        dto.setVideoName(video.getVideoName());
+        dto.setId(video.getVideoSeq());
+        dto.setIndex(video.getVideoIndex());
+        dto.setVideoLectureData(video.getVideoLectureData());
+        return dto;
+    }
 }

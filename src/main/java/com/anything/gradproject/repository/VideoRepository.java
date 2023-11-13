@@ -12,4 +12,6 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     List<Video> findByLectures(Lectures lecture);
     Optional<Video> findByVideoSeq(long videoSeq);
 
+    List<Video> findByLectures_LectureSeq(long lectureSeq);
+
 }

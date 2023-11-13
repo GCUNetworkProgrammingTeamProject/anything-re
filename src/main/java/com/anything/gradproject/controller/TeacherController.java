@@ -1,10 +1,7 @@
 package com.anything.gradproject.controller;
 
 import com.anything.gradproject.auth.PrincipalDetail;
-import com.anything.gradproject.dto.InquiryFormDto;
-import com.anything.gradproject.dto.LecturesFormDto;
-import com.anything.gradproject.dto.TeacherDetailFormDto;
-import com.anything.gradproject.dto.VideoFormDto;
+import com.anything.gradproject.dto.*;
 import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
 import com.anything.gradproject.service.*;
@@ -38,6 +35,15 @@ public class TeacherController {
     private final MemberService memberService;
 
 
+    // 강의 안에 동영상 출력
+    @GetMapping("/lectures/v/{lectureSeq}")
+    public ResponseEntity<List<VideoResponseDto>> printVideov(@PathVariable long lectureSeq) {
+
+        List<VideoResponseDto> dtoList = videoService.findVideo(lectureSeq);
+
+        return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+    }
+
 
     // 강의 목록 출력
     @GetMapping("/lectures")
@@ -46,6 +52,7 @@ public class TeacherController {
         List<Lectures> lecturesList = lectureService.findUserLectureList(memberService.findMemberByToken(token));
         return ResponseEntity.ok(lecturesList);
     }
+
 
 
     // 강의 등록

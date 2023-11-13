@@ -64,11 +64,13 @@ public class MemberController {
         JwtToken token = memberService.login(dto.getId(), dto.getPassword());
         return ResponseEntity.ok(token);
     }
+
 //    @GetMapping("/loginCheck") //
 //    public ResponseEntity<Member> loginCheck(@RequestHeader("Authorization") String token) {
 //
 //        return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByToken(token));
 //    }
+
     @GetMapping("/info") // 로그인 유저 정보 반환
     public ResponseEntity<MemberInfoDto> getInfo(@RequestHeader("Authorization") String token) {
         MemberInfoDto dto = MemberService.getInfo(memberService.findMemberByToken(token));
