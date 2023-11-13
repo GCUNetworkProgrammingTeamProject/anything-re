@@ -23,7 +23,8 @@ public class ChatbotServiceImpl implements ChatbotService {
 
     @Override
     public List<ChatbotResponseDto> printChatbot(long videoSeq, Member member) {
-        long logSeq = chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videoSeq, member.getUserSeq());
+        long logSeq = chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videoSeq, member.getUserSeq()).getChatbotLogSeq();
+        // System.out.println("logSeq: "+logSeq);
         List<ChatbotResponseDto> dtoList = chatbotLogDetailRepository.findByChatbotLog_ChatbotLogSeq(logSeq)
                 .stream()
                 .map(ChatbotResponseDto::entityToDto)

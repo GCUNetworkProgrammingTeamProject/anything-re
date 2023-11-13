@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class AnalysisResponseDto {
-    private String timeline;
-    private String concentration;
+    private int timeline;
+    private float concentration;
 
     @Builder
     public AnalysisResponseDto(VideoAnalysisDetail videoAnalysisDetail) {

@@ -7,7 +7,7 @@ public class LectureResponseDto {
 
     private String title;
     private long id;
-    private String desc;
+    private String desc; // 설명
     private int lessonCount;
     private int originalPrice;
     private String imageSrc;

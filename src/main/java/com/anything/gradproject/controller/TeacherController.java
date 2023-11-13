@@ -55,6 +55,7 @@ public class TeacherController {
         try {
             Lectures lectures = Lectures.createLectures(lecturesFormDto, memberService.findMemberByToken(token));
             String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
+	    lectures.setLecturesType(lectureService.setLecturesType(lecturesFormDto.getLecturesType()));
             lectures.setLectureImage(fileName);
             lecturesRepository.save(lectures);
         } catch (IllegalStateException e) {

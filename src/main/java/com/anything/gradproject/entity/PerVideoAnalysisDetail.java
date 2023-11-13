@@ -14,8 +14,8 @@ public class PerVideoAnalysisDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int perVideoAnalysisDetailSeq;
 
-    private String timeline;
-    private String concentration;
+    private int timeline;
+    private float concentration;
     @ManyToOne
     @JoinColumn(name = "per_video_analysis_seq")
     private PerVideoAnalysis perVideoAnalysis;

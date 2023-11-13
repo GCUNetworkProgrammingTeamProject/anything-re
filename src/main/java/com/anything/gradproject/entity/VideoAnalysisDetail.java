@@ -10,8 +10,8 @@ public class VideoAnalysisDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int VideoAnalysisDetailSeq;
 
-    private String timeline;
-    private String concentration;
+    private int timeline;
+    private float concentration;
 
     @ManyToOne
     @JoinColumn(name = "video_analysis_seq")

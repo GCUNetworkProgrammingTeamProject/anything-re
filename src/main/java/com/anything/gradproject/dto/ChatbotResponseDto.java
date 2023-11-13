@@ -4,7 +4,9 @@ import com.anything.gradproject.entity.ChatbotLogDetail;
 import com.anything.gradproject.entity.PerChatbotLogDetail;
 import com.anything.gradproject.entity.VideoAnalysisDetail;
 import lombok.Builder;
+import lombok.Data;
 
+@Data
 public class ChatbotResponseDto {
     private String question;
     private String answer;

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public class MemberController {
 
     @PostMapping("/login") //로그인
     public ResponseEntity<JwtToken> loginSuccess(@RequestBody LoginRequestDto dto) {
-        System.out.println("로그인 요청 도착");
+        // System.out.println("로그인 요청 도착");
         JwtToken token = memberService.login(dto.getId(), dto.getPassword());
         return ResponseEntity.ok(token);
     }
@@ -78,7 +79,7 @@ public class MemberController {
     @GetMapping(value = "/lectures/detail/{lectureSeq}")
     public ResponseEntity<LectureResponseDto> printLectureDetail(@PathVariable long lectureSeq) {
         LectureResponseDto dto = lectureService.getLectureDetail(lectureSeq);
-
+        // System.out.println(dto.getAuthorName()+dto.getId());
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
@@ -255,7 +256,8 @@ public class MemberController {
     // 구매 목록 출력
     @GetMapping(value = "/users/order")
     public ResponseEntity<List<Lectures>> printPurchaseList(){
-        List<Lectures> lecturesList = null;
+        //List<Lectures> lecturesList = null; //기존 코드
+        List<Lectures> lecturesList = new ArrayList<>(); //수정한 코드
         List<PurchaseList> purchaseLists = purchaseListRepository.findAll();
         for (PurchaseList p: purchaseLists)
             lecturesList.add(p.getLectures());
@@ -343,6 +345,18 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
         return ResponseEntity.status(HttpStatus.OK).body("장바구니 리스트 구매 완료");
+    }
+
+
+    // 집중도 분석권 결제
+    @GetMapping(value = "/users/analysis/order")
+    public ResponseEntity<String> analysisToOrder() {
+
+        try {
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("집중도 분석권 결제 완료");
     }
 
 

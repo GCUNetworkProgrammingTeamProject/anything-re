@@ -37,6 +37,7 @@ public class MemberService {
         MemberInfoDto dto = new MemberInfoDto();
         dto.setRole(memberByToken.getRole().toString());
         dto.setName(memberByToken.getName());
+        dto.setEmail(memberByToken.getEmail());
         return dto;
     }
 

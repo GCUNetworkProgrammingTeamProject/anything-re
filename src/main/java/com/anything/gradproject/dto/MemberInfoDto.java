@@ -7,6 +7,7 @@ import lombok.Data;
 public class MemberInfoDto {
     private String name;
     private String role;
+    private String email;
 
 
 }

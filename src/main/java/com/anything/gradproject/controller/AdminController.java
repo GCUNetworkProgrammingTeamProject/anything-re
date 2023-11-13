@@ -116,10 +116,8 @@ public class AdminController {
 
     // 메인 배너에 올릴 광고 선택
     @PostMapping("/admin/ad/select")
-    public ResponseEntity<List<Advertisement>> selectMainAdvers(List<Long> selectedList){
-        List<Advertisement> advertisements = null;
-        for (Long l: selectedList)
-            advertisements.add(advertisementRepository.findByadverSeq(l));
+    public ResponseEntity<Advertisement> selectMainAdvers(@RequestBody Long selectedList){
+        Advertisement advertisements = advertisementRepository.findByadverSeq(selectedList);
 
         return ResponseEntity.ok(advertisements);
     }

@@ -76,7 +76,7 @@ public class CommunityApiController {
                 .body("삭제 성공");
     }
 
-    @PutMapping("/community/{id}") //글번호로 업데이트
+    @PutMapping("/community/{PostId}") //글번호로 업데이트
     public ResponseEntity<String> updatePost(@PathVariable long PostId, @RequestBody CommunityPostDto communityPostDto, @RequestHeader("Authorization")String token) {
         Member member = memberService.findMemberByToken(token);
         try {

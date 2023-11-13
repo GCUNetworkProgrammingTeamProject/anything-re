@@ -2,6 +2,11 @@ package com.anything.gradproject.controller.api;
 
 import com.anything.gradproject.auth.PrincipalDetail;
 import com.anything.gradproject.dto.*;
+import com.anything.gradproject.entity.Lectures;
+import com.anything.gradproject.entity.Member;
+import com.anything.gradproject.entity.Video;
+import com.anything.gradproject.repository.LecturesRepository;
+import com.anything.gradproject.repository.VideoRepository;
 import com.anything.gradproject.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,14 +15,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class MyPageController {
 
     private final MemberService memberService;
+    private final PurchaseService purchaseService;
+    private final VideoRepository videoRepository;
     private final AnalysisServiceImpl analysisServiceImpl;
     private final ChatbotService chatbotService;
 
@@ -66,7 +74,7 @@ public class MyPageController {
     public ResponseEntity<List<AnalysisResponseDto>> getAnalysis(
              @RequestHeader("Authorization")String token,
             @PathVariable long video_seq) {
-
+        
         List<AnalysisResponseDto> dtoList = analysisServiceImpl.getAnalysis(video_seq,memberService.findMemberByToken(token));
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
@@ -75,8 +83,9 @@ public class MyPageController {
     public ResponseEntity<List<ChatbotResponseDto>> getLecChatbot(
             @PathVariable long videoSeq,
             @RequestHeader("Authorization")String token) {
-
+        // System.out.println(videoSeq);
         List<ChatbotResponseDto> dtoList = chatbotService.printChatbot(videoSeq,memberService.findMemberByToken(token));
+        // System.out.println(dtoList);
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
 
@@ -88,6 +97,28 @@ public class MyPageController {
         List<ChatbotResponseDto> dtoList = chatbotService.printPerChatbot(perVideoSeq, memberService.findMemberByToken(token));
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
+
+
+    @GetMapping("/getVideoSeq")
+    public ResponseEntity<List<Long>> getVideoSeq(
+            @RequestHeader("Authorization")String token) {
+        Member m = memberService.findMemberByToken(token);
+        List<Lectures> lecturesList = purchaseService.findLecutresByMember(m);
+        List<Video> videoList = new ArrayList<>();
+        List<Video> tmp;
+        List<Long> videoSeqList = new ArrayList<>();
+
+        for (Lectures l: lecturesList) {
+            tmp = videoRepository.findByLectures(l);
+            for (Video v: tmp) {
+                videoList.add(v);
+            }
+        }
+        for (Video v : videoList)
+            videoSeqList.add(v.getVideoSeq());
+        return ResponseEntity.ok(videoSeqList);
+    }
+
 
     // 결제내역 조회
 

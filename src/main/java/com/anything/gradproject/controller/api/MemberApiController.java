@@ -45,16 +45,17 @@ public class MemberApiController {
 
     @ResponseBody
     @GetMapping("/id") // 아이디 찾기
-    public ResponseEntity<String> findId(String email) {
+    public ResponseEntity<String> findId(@RequestParam String email) {
+        //System.out.println(email);
         String username = memberService.findId(email);
         if (username == null)
             return ResponseEntity.status(HttpStatus.CONFLICT).body("아이디를 찾지 못했습니다.");
         return ResponseEntity.ok(username);
     }
 
-    @PatchMapping("/password") // 비밀번호 찾기
-    public ResponseEntity<String> findPass(@RequestBody PasswordFormDto passwordFormDto) {
-
+    @GetMapping("/password") // 비밀번호 찾기
+    public ResponseEntity<String> findPass(@ModelAttribute PasswordFormDto passwordFormDto) {
+        //System.out.println(passwordFormDto);
         try {
             memberService.resetPassword(passwordFormDto);
             return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경이 완료되었습니다.");
