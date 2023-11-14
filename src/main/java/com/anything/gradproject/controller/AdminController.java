@@ -7,6 +7,7 @@ import com.anything.gradproject.dto.LecturesFormDto;
 import com.anything.gradproject.dto.*;
 import com.anything.gradproject.entity.Advertisement;
 import com.anything.gradproject.entity.Lectures;
+import com.anything.gradproject.entity.Member;
 import com.anything.gradproject.entity.PurchaseList;
 import com.anything.gradproject.repository.AdvertisementRepository;
 import com.anything.gradproject.repository.LecturesRepository;
@@ -14,6 +15,7 @@ import com.anything.gradproject.repository.MemberRepository;
 import com.anything.gradproject.repository.PurchaseListRepository;
 import com.anything.gradproject.service.FileService;
 import com.anything.gradproject.service.LectureService;
+import com.anything.gradproject.service.MemberService;
 import com.anything.gradproject.service.MemberService;
 import com.anything.gradproject.service.TeacherDetailService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,9 +103,10 @@ public class AdminController {
 
     // 광고 삭제
     @DeleteMapping("/admin/ad/{adverSeq}")
-    public ResponseEntity<String> deleteAdvers(@PathVariable long adverSeq) {
+    public ResponseEntity<String> deleteAdvers(@PathVariable int adverSeq) {
         try {
-            Advertisement advertisement = advertisementRepository.findByadverSeq(adverSeq);
+            long Seq = Long.valueOf(adverSeq);
+            Advertisement advertisement = advertisementRepository.findByadverSeq(Seq);
             fileService.removeFile(advertisement.getAdverImage());
             advertisementRepository.delete(advertisement);
         } catch (IllegalStateException e) {

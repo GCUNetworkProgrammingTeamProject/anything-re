@@ -29,7 +29,7 @@ public class AnalysisServiceImpl implements AnalysisService{
 
 
     public List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member) {
-        VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(videoSeq, member.getUserSeq()).orElseThrow(() -> {
+        VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(member.getUserSeq(), videoSeq).orElseThrow(() -> {
             return new IllegalArgumentException("해당 강의를 듣고 이용해 주세요.");
         });
         List<AnalysisResponseDto> dtoList = videoAnalysisDetailRepository.findByVideoAnalysis_VideoAnalysisSeq(videoAnalysis.getVideoAnalysisSeq())

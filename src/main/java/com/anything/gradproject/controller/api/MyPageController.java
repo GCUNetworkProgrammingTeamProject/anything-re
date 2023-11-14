@@ -101,25 +101,29 @@ public class MyPageController {
 
     @GetMapping("/getVideoSeq")
     public ResponseEntity<List<Long>> getVideoSeq(
-            @RequestHeader("Authorization")String token) {
+            @RequestHeader(value = ("Authorization"), required = false) String token) {
+
         Member m = memberService.findMemberByToken(token);
-        List<Lectures> lecturesList = purchaseService.findLecutresByMember(m);
-        List<Video> videoList = new ArrayList<>();
-        List<Video> tmp;
         List<Long> videoSeqList = new ArrayList<>();
 
-        for (Lectures l: lecturesList) {
-            tmp = videoRepository.findByLectures(l);
-            for (Video v: tmp) {
-                videoList.add(v);
+        if (m != null) {
+            List<Lectures> lecturesList = purchaseService.findLecutresByMember(m);
+            List<Video> videoList = new ArrayList<>();
+            List<Video> tmp;
+
+            for (Lectures l : lecturesList) {
+                tmp = videoRepository.findByLectures(l);
+                for (Video v : tmp) {
+                    videoList.add(v);
+                }
             }
-        }
-        for (Video v : videoList)
-            videoSeqList.add(v.getVideoSeq());
-        return ResponseEntity.ok(videoSeqList);
+            for (Video v : videoList)
+                videoSeqList.add(v.getVideoSeq());
+            return ResponseEntity.ok(videoSeqList);
+
+        } else
+            return null;
     }
-
-
     // 결제내역 조회
 
 

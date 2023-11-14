@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface ShoppingListRepository extends JpaRepository<ShoppingList, Long> {
     List<ShoppingList> findByMember(Member member);
     Optional<ShoppingList> findByLectures(Lectures lectures);
+Optional<ShoppingList> findByLecturesAndMember(Lectures lectures, Member member);
 }
