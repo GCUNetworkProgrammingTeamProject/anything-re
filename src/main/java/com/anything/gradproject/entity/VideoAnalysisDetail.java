@@ -21,9 +21,10 @@ public class VideoAnalysisDetail {
     private VideoAnalysis videoAnalysis;
 
     @Builder
-    public VideoAnalysisDetail(int timeline, float concentration) {
+    public VideoAnalysisDetail(int timeline, float concentration, VideoAnalysis videoAnalysis) {
         this.timeline = timeline;
         this.concentration = concentration;
+        this.videoAnalysis = videoAnalysis;
     }
 
 

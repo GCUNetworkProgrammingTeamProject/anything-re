@@ -1,10 +1,7 @@
 package com.anything.gradproject.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
@@ -30,5 +27,11 @@ public class VideoAnalysis extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "user_seq")
     private Member member; // fk
+
+    @Builder
+    public VideoAnalysis(Video video, Member member) {
+        this.video = video;
+        this.member = member;
+    }
 
 }

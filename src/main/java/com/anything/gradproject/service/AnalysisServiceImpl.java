@@ -3,10 +3,13 @@ package com.anything.gradproject.service;
 import com.anything.gradproject.dto.AnalysisRequestDto;
 import com.anything.gradproject.dto.AnalysisResponseDto;
 import com.anything.gradproject.entity.Member;
+import com.anything.gradproject.entity.Video;
 import com.anything.gradproject.entity.VideoAnalysis;
 import com.anything.gradproject.entity.VideoAnalysisDetail;
+import com.anything.gradproject.repository.MemberRepository;
 import com.anything.gradproject.repository.VideoAnalysisDetailRepository;
 import com.anything.gradproject.repository.VideoAnalysisRepository;
+import com.anything.gradproject.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,6 +29,8 @@ public class AnalysisServiceImpl implements AnalysisService{
     private final VideoAnalysisDetailRepository videoAnalysisDetailRepository;
     private final VideoAnalysisRepository videoAnalysisRepository;
     private final WebClient webClient;
+    private final MemberRepository memberRepository;
+    private final VideoRepository videoRepository;
 
     @Value("${external.api.url}")
     private String url;
@@ -45,7 +50,16 @@ public class AnalysisServiceImpl implements AnalysisService{
     @Override
     public String sendGetRequest(long userSeq, long videoSeq, String recording) {
         String result;
+        Member member = memberRepository.findByUserSeq(userSeq).orElseThrow(()->new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+        Video video = videoRepository.findByVideoSeq(videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
+
         try {
+            if (videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isEmpty()) {
+                VideoAnalysis va = new VideoAnalysis(video, member);
+                videoAnalysisRepository.save(va);
+            }
+            VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).orElseThrow(()->new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
+
             AnalysisRequestDto dto = new AnalysisRequestDto();
             dto.setUserSeq(userSeq);
             dto.setRecording(recording);
@@ -59,7 +73,7 @@ public class AnalysisServiceImpl implements AnalysisService{
 
             responseDataMono.subscribe(responseData -> {
                 for (Map.Entry<Integer, Float> entry : responseData.entrySet()) {
-                    VideoAnalysisDetail vad = new VideoAnalysisDetail(entry.getKey(), entry.getValue());
+                    VideoAnalysisDetail vad = new VideoAnalysisDetail(entry.getKey(), entry.getValue(), videoAnalysis);
                     videoAnalysisDetailRepository.save(vad);
                 }
             });

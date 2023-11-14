@@ -32,15 +32,13 @@ public class CcApiController {
     // 댓글 삭제 - 처리		DELETE	/community/comments/{coId}
 
 
-
-
     private final CommunityCommentService communityCommentService;
 
     private final CommunityPostService communityPostService;
     private final MemberService memberService;
 
     @PostMapping("/community/{postId}/new")
-    public ResponseEntity<String> createComment(@PathVariable long postId, @RequestBody CommunityCommentDto CommunityCommentDto, @RequestHeader("Authorization")String token) {
+    public ResponseEntity<String> createComment(@PathVariable long postId, @RequestBody CommunityCommentDto CommunityCommentDto, @RequestHeader("Authorization") String token) {
         communityCommentService.save(CommunityCommentDto, memberService.findMemberByToken(token), communityPostService.findById(postId));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("댓글 작성 완료");
@@ -56,9 +54,8 @@ public class CcApiController {
     }
 
 
-
     @DeleteMapping("/community/comments/{coId}") // 댓글 번호로 삭제
-    public ResponseEntity<String> deleteComment(@PathVariable long coId, @RequestHeader("Authorization")String token) {
+    public ResponseEntity<String> deleteComment(@PathVariable long coId, @RequestHeader("Authorization") String token) {
 
         communityCommentService.deleteComment(coId, memberService.findMemberByToken(token));
 
@@ -66,6 +63,8 @@ public class CcApiController {
                 .body("삭제가 완료되었습니다.");
     }
 
-
-
+    @PatchMapping("/community/comments/{coId}")
+    public ResponseEntity<String> updateComment(@PathVariable long coId, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.status(HttpStatus.OK).body("댓글 수정 완료");
+    }
 }
