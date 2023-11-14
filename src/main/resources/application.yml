@@ -8,9 +8,9 @@ file:
     dir: /home/t23209/educrat/public/assets/img/courses/
 external:
     api:
-        url: http://ceprj.gachon.ac.kr:60009/concentrate
+        url: http://ceprj.gachon.ac.kr:7009/concentrate
 openai:
-    api-key: YOUR_OPENAI_API_KEY_HERE
+    api-key: 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
 
 spring:
     servlet:

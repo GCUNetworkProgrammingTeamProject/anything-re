@@ -6,8 +6,6 @@ import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
 import com.anything.gradproject.service.*;
 import com.anything.gradproject.token.JwtToken;
-import jakarta.validation.Valid;
-import com.anything.gradproject.token.JwtToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -355,6 +351,7 @@ public class MemberController {
     public ResponseEntity<String> analysisToOrder() {
 
         try {
+
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
@@ -362,17 +359,20 @@ public class MemberController {
     }
 
 
-    @PostMapping("/user/lectures/{lectureSeq}/{videoSeq}/analysis") // (집중도 분석 요청)유저에게 녹화 파일을 받아 서버에 저장, 플라스크 서버로 전송
+    @PostMapping("/user/lectures/{videoSeq}/analysis") // (집중도 분석 요청)유저에게 녹화 파일을 받아 서버에 저장, 플라스크 서버로 전송
     public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization")String token, @PathVariable long videoSeq, @RequestParam("file") MultipartFile file) {
         String recording = fileService.saveFile2(file);
+        String result = analysisService.sendGetRequest(memberService.findMemberByToken(token).getUserSeq(), videoSeq, recording);
 
-
-        return analysisService.sendPostRequest(memberService.findMemberByToken(token).getUserSeq(), videoSeq, recording);
+        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(result));
     }
 
     @PostMapping("/users/{videoSeq}/chatbot") // 챗봇 질문
-    public Mono<String> generateChatResponse(@RequestBody String message, @PathVariable long videoSeq) {
-        return chatGptService.generateChatResponse(message, videoSeq);
+    public ResponseEntity<String> generateChatResponse(@RequestHeader("Authorization")String token, @RequestBody ChatGptRequestDto dto, @PathVariable long videoSeq) {
+
+        String response = chatGptService.generateChatResponse(dto.getMessages(), videoSeq, memberService.findMemberByToken(token));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/users/lectures/stream/per") //개인 영상 학습 종료, 정보 저장, ai전송

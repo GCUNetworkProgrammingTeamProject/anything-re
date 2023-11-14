@@ -17,5 +17,5 @@ import java.util.List;
 public interface AnalysisService {
     public List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member);
 
-    public Mono<ResponseEntity<String>> sendPostRequest(long userSeq, long videoSeq, String recording);
+    public String sendGetRequest(long userSeq, long videoSeq, String recording);
 }
