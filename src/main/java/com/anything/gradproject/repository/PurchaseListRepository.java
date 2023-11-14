@@ -16,5 +16,5 @@ public interface PurchaseListRepository extends JpaRepository<PurchaseList, Long
 
     List<PurchaseList> findByMemberAndLectures(Member member, Lectures lectures);
 
-
+    Optional<PurchaseList> findByLecturesAndMember(Lectures lectures, Member member);
 }

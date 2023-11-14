@@ -251,17 +251,16 @@ public class MemberController {
 
 
 
+
     // 구매 목록 출력
     @GetMapping(value = "/users/order")
-    public ResponseEntity<List<Lectures>> printPurchaseList(){
-        //List<Lectures> lecturesList = null; //기존 코드
-        List<Lectures> lecturesList = new ArrayList<>(); //수정한 코드
-        List<PurchaseList> purchaseLists = purchaseListRepository.findAll();
+    public ResponseEntity<List<Lectures>> printPurchaseList(@RequestHeader("Authorization")String token){
+        List<Lectures> lecturesList = new ArrayList<>();
+        List<PurchaseList> purchaseLists = purchaseListRepository.findByMember(memberService.findMemberByToken(token));
         for (PurchaseList p: purchaseLists)
             lecturesList.add(p.getLectures());
         return ResponseEntity.ok(lecturesList);
     }
-
 
 
 
@@ -296,8 +295,9 @@ public class MemberController {
     @PostMapping(value = "/users/shoplist/{lectureSeq}")
     public ResponseEntity<String> createShopping(@PathVariable long lectureSeq, @RequestHeader("Authorization")String token) {
         try {
-            ShoppingList shoppingList = ShoppingList.createShoppingList(lecturesRepository.findBylectureSeq(lectureSeq).get(), memberService.findMemberByToken(token));
-            shoppingService.saveShoppingList(shoppingList);
+            Member member = memberService.findMemberByToken(token);
+            ShoppingList shoppingList = ShoppingList.createShoppingList(lecturesRepository.findBylectureSeq(lectureSeq).get(), member);
+            shoppingService.saveShoppingList(shoppingList, member);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
@@ -334,17 +334,20 @@ public class MemberController {
         try {
             List<ShoppingList> shoppingLists = shoppingService.findDeleteShoppinglists(memberService.findMemberByToken(token));
 
-            for (ShoppingList s : shoppingLists) {
-                PurchaseList purchaseList = new PurchaseList().createPurchaseList(s);
-                purchaseListRepository.save(purchaseList);
-                shoppingListRepository.delete(s);
+            if (shoppingLists.isEmpty())
+                return ResponseEntity.status(HttpStatus.OK).body("장바구니가 비어있습니다.");
+            else {
+                for (ShoppingList s : shoppingLists) {
+                    PurchaseList purchaseList = new PurchaseList().createPurchaseList(s);
+                    purchaseListRepository.save(purchaseList);
+                    shoppingListRepository.delete(s);
+                }
             }
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
         return ResponseEntity.status(HttpStatus.OK).body("장바구니 리스트 구매 완료");
     }
-
 
     // 집중도 분석권 결제
     @GetMapping(value = "/users/analysis/order")

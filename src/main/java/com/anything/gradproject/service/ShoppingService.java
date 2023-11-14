@@ -45,34 +45,33 @@ public class ShoppingService {
        return member;
    }
 
-   public ShoppingList saveShoppingList(ShoppingList shoppingList){
-       String duplicateShopping = checkDuplicateShopping(shoppingList);
+   public ShoppingList saveShoppingList(ShoppingList shoppingList, Member member){
+       String duplicateShopping = checkDuplicateShopping(shoppingList, member);
        if (duplicateShopping != null) {
            throw new IllegalStateException(duplicateShopping);
        }
-       String duplicatePurchase = checkDuplicatePurchase(shoppingList);
+       String duplicatePurchase = checkDuplicatePurchase(shoppingList, member);
        if (duplicatePurchase != null) {
            throw new IllegalStateException(duplicatePurchase);
        }
        return shoppingListRepository.save(shoppingList);
    }
 
-    public String checkDuplicateShopping(ShoppingList shoppingList) {
-        Optional<ShoppingList> findShoppingList = shoppingListRepository.findByLectures(shoppingList.getLectures());
+    public String checkDuplicateShopping(ShoppingList shoppingList, Member member) {
+        Optional<ShoppingList> findShoppingList = shoppingListRepository.findByLecturesAndMember(shoppingList.getLectures(), member);
         if (!findShoppingList.isEmpty()) {
             return "이미 담은 강의입니다.";
         }
         return null;
     }
 
-    public String checkDuplicatePurchase(ShoppingList shoppingList) {
-        Optional<PurchaseList> findPurchaseList = purchaseListRepository.findByLectures(shoppingList.getLectures());
+    public String checkDuplicatePurchase(ShoppingList shoppingList, Member member) {
+        Optional<PurchaseList> findPurchaseList = purchaseListRepository.findByLecturesAndMember(shoppingList.getLectures(), member);
         if (!findPurchaseList.isEmpty()) {
             return "이미 구매한 강의입니다.";
         }
         return null;
     }
-
 
     public List<Lectures> findLecutresByMember(Member member){
        List<ShoppingList> shoppingLists = shoppingListRepository.findByMember(member);
