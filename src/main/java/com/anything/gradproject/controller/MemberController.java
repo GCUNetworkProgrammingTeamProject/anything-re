@@ -321,8 +321,8 @@ public class MemberController {
     // 장바구니 목록 출력
     @GetMapping(value = "/users/shoplist/list")
     public ResponseEntity<List<Lectures>> printShoppingList(@RequestHeader("Authorization")String token){
-        List<Lectures> lecturesList = null;
-        List<ShoppingList> shoppingLists = shoppingListRepository.findAll();
+        List<Lectures> lecturesList = new ArrayList<>();
+        List<ShoppingList> shoppingLists = shoppingListRepository.findByMember(memberService.findMemberByToken(token));
         for (ShoppingList s: shoppingLists)
             lecturesList.add(s.getLectures());
 
