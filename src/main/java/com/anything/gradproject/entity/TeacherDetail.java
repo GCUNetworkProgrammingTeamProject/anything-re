@@ -49,12 +49,11 @@ public class TeacherDetail  {
 
     @Builder
     public TeacherDetail(TeacherDetailFormDto dto, Member member) {
-        String code1 = UUID.randomUUID().toString();
         this.member = member;
         this.teacherCareer = dto.getTeacherCareer();
         this.teacherField = dto.getTeacherField();
         this.teacherIntro = dto.getTeacherIntro();
-        this.teacherImg = "TeacherImg" + code1;
+        this.teacherImg = dto.getSaveFilePath();
     }
 
 

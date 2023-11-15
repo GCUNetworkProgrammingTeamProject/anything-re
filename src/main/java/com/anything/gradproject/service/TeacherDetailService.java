@@ -14,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,17 +29,14 @@ public class TeacherDetailService {
     private final TeacherDenyRepository teacherDenyRepository;
     private final MemberRepository memberRepository;
 
-    public void saveTeacherDetail(TeacherDetailFormDto dto, Member member) throws IOException {
-
+    public void saveTeacherDetail(TeacherDetailFormDto dto, Member member, MultipartFile file) throws IOException {
+        String saveFilePath = fileService.saveFile2(file);
         dto.setMember(member);
-
+        dto.setSaveFilePath(saveFilePath);
         TeacherDetail teacherDetail = dto.toEntity(dto, member);
-
-        String imageName = fileService.saveFile(dto.getTeacherImg(), teacherDetail.getTeacherImg());
-        teacherDetail.setTeacherImg(imageName);
-
         teacherDetailRepository.save(teacherDetail);
     }
+
     @Transactional
     public void setTeacherDetail(TeacherDenyDto dto) {
         TeacherDetail teacherDetail = teacherDetailRepository.findById(dto.getTeacherDetailSeq()).orElseThrow(() -> new IllegalArgumentException("not found: " + dto.getTeacherDetailSeq()));

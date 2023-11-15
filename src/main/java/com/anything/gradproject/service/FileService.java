@@ -27,7 +27,7 @@ public class FileService {
 
     public String saveFile(MultipartFile files, String fileName) throws IOException {
         if (files.isEmpty()) {
-            return "Error";
+            return "file이 없습니다.";
         }
 
         // 원래 파일 이름 추출
@@ -56,16 +56,25 @@ public class FileService {
         return savedName;
     }
 
-    public String saveFile2(MultipartFile file) { // 파일을 받아 지정된 경로에 저장하고 경로를 String으로 반환, 중복시 파일 덮어쓰기.
-
-        Path copyOfLocation = Paths.get(fileDir + File.separator + StringUtils.cleanPath(file.getOriginalFilename()));
+    public String saveFile2(MultipartFile file) { // 파일을 받아 지정된 경로에 저장하고 경로를 String으로 반환
+        if (file.isEmpty()) {
+            return "file이 없습니다.";
+        }
+        // 파일 이름 추출, 변경 후 확장자와 함께 저장
+        String randomName = UUID.randomUUID().toString();
+        String originName = file.getOriginalFilename();
+        String extension = originName.substring(originName.lastIndexOf("."));
+        String saveFilePath = fileDir + randomName + extension;
+        //
         try {
-            Files.copy(file.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            return e.getMessage();
+            File saveFile = new File(saveFilePath);
+            file.transferTo(saveFile);
+            return saveFilePath;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("파일 업로드 중 오류가 발생했스빈다.", e);
         }
 
-        return copyOfLocation.toString();
     }
 
 

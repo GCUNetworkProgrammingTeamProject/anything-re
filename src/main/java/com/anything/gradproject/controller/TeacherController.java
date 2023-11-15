@@ -1,6 +1,5 @@
 package com.anything.gradproject.controller;
 
-import com.anything.gradproject.auth.PrincipalDetail;
 import com.anything.gradproject.dto.*;
 import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
@@ -8,8 +7,6 @@ import com.anything.gradproject.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,16 +54,13 @@ public class TeacherController {
 
     // 강의 등록
     @PostMapping("/lectures")
-    public ResponseEntity<String> createLectures(@RequestBody LecturesFormDto lecturesFormDto,
+    public ResponseEntity<String> createLectures(
+            @RequestPart MultipartFile file,
+            @RequestPart LecturesFormDto lecturesFormDto,
             @RequestHeader("Authorization")String token) throws IOException {
         try {
-
-            Lectures lectures = Lectures.createLectures(lecturesFormDto, memberService.findMemberByToken(token));
-            String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
-	    lectures.setLecturesType(lectureService.setLecturesType(lecturesFormDto.getLecturesType()));
-            lectures.setLectureImage(fileName);
-            lecturesRepository.save(lectures);
-        } catch (IllegalStateException e) {
+            lectureService.saveLecture(lecturesFormDto, memberService.findMemberByToken(token), file);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("강의 등록 완료");
@@ -74,16 +68,15 @@ public class TeacherController {
 
 
     // 강의 수정
-    @PutMapping("/lectures/{lectureSeq}")
-    public ResponseEntity<String> updateLectures(@PathVariable long lectureSeq, LecturesFormDto lecturesFormDto) throws IOException {
+    @PatchMapping("/lectures/{lectureSeq}")
+    public ResponseEntity<String> updateLectures(
+            @PathVariable long lectureSeq,
+            @RequestPart LectureUpdateDto dto,
+            @RequestPart(required = false) MultipartFile file,
+            @RequestHeader("Authorization")String token) throws IOException {
 
         try {
-            Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
-            lectures.setLectureImage(lectures.getLectureImage().substring(0, lectures.getLectureImage().lastIndexOf(".")));
-            Lectures.modifyLectures(lecturesFormDto, lectures);
-            String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
-            lectures.setLectureImage(fileName);
-            lecturesRepository.save(lectures);
+            lectureService.updateLecture(lectureSeq, dto, memberService.findMemberByToken(token), file);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
@@ -93,12 +86,11 @@ public class TeacherController {
 
     // 강의 삭제
     @DeleteMapping("/lectures/{lectureSeq}")
-    public ResponseEntity<String> deleteLectures(@PathVariable long lectureSeq) {
-
+    public ResponseEntity<String> deleteLectures(
+            @PathVariable long lectureSeq,
+            @RequestHeader("Authorization")String token) {
         try {
-            Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
-            fileService.removeFile(lectures.getLectureImage());
-            lecturesRepository.delete(lectures);
+            lectureService.deleteLecture(lectureSeq, memberService.findMemberByToken(token));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }

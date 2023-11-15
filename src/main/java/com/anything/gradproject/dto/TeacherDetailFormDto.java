@@ -16,8 +16,8 @@ public class TeacherDetailFormDto {
     private Member member;
     private String teacherIntro; // 강사 소개
     private String teacherCareer; // 강사 경력
-    private MultipartFile teacherImg;
     private String teacherField; // 강사 분야
+    private String saveFilePath;
 
     public TeacherDetail toEntity(TeacherDetailFormDto dto, Member member) {
         return TeacherDetail.builder()

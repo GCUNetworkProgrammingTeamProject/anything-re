@@ -57,7 +57,6 @@ public class AdminController {
 
 
 
-
     // 광고 리스트 출력
     @GetMapping("/admin/ad")
     public ResponseEntity<List<Advertisement>> printAdvers() {
@@ -131,37 +130,6 @@ public class AdminController {
 
         List<Lectures> lecturesList = lectureService.findUserLectureList(memberService.findMemberByToken(token));
         return ResponseEntity.ok(lecturesList);
-    }
-
-    // 강의 수정
-    @PutMapping("/admin/lectures/{lectureSeq}")
-    public ResponseEntity<String> updateLectures(@PathVariable long lectureSeq, LecturesFormDto lecturesFormDto) throws IOException {
-
-        try {
-            Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
-            lectures.setLectureImage(lectures.getLectureImage().substring(0, lectures.getLectureImage().lastIndexOf(".")));
-            Lectures.modifyLectures(lecturesFormDto, lectures);
-            String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
-            lectures.setLectureImage(fileName);
-            lecturesRepository.save(lectures);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("강의 변경 완료");
-    }
-
-    // 강의 삭제
-    @DeleteMapping("/admin/lectures/{lectureSeq}")
-    public ResponseEntity<String> deleteLectures(@PathVariable long lectureSeq) {
-
-        try {
-            Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
-            fileService.removeFile(lectures.getLectureImage());
-            lecturesRepository.delete(lectures);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("강의 삭제 완료");
     }
 
 
