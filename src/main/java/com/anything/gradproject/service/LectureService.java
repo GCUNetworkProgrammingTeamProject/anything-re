@@ -26,7 +26,9 @@ public class LectureService {
     private final LecturesRepository lecturesRepository;
     private final PersonalVideoRepository personalVideoRepository;
     private final LectureReviewRepository lectureReviewRepository;
-//    private final FileService fileService;
+    private final FileService fileService;
+    private final VideoRepository videoRepository;
+    private final VideoService videoService;
 
     public LecturesType setLecturesType(String str){
         LecturesType lecturesType;
@@ -70,7 +72,7 @@ public class LectureService {
     }
 
     public List<Lectures> findUserLectureList(Member member) {
-        return lecturesRepository.findBymember(member);
+        return lecturesRepository.findByMember_UserSeq(member.getUserSeq());
     }
 
 
@@ -109,14 +111,17 @@ public class LectureService {
         return dto;
     }
 
-//    public void saveLecture(LecturesFormDto dto, Member member, MultipartFile file) {
-//        String saveFilePath = fileService.saveFile2(file);
-//        dto.setLecturesImg(saveFilePath);
-//        String type = dto.getLecturesType();
-//        LecturesType lecturesType = setLecturesType(type);
-//        Lectures lectures = new Lectures(dto, member, lecturesType);
-//        lecturesRepository.save(lectures);
-//    }
+    @Transactional
+    public void saveLecture(LecturesFormDto dto, Member member) {
+        //파일 저장
+        String saveImagePath = fileService.saveFile2(dto.getLectureImage());
+        LecturesType type = setLecturesType(dto.getLecturesType());
+        Lectures lectures = new Lectures(dto, member, type);
+        lectures.setLectureImage(saveImagePath);
+        Lectures savedLecture = lecturesRepository.save(lectures);
+        videoService.saveVideo(savedLecture, dto);
+    }
+
 //
 //    @Transactional
 //    public void updateLecture(long lectureSeq, LectureUpdateDto dto, Member member, MultipartFile file) {

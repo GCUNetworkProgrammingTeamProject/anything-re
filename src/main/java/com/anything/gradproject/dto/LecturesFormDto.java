@@ -33,4 +33,9 @@ public class LecturesFormDto {
     @NotEmpty(message = "강의 카테고리를 입력해 주세요")
     private String lecturesType;
 
+    private MultipartFile Video;
+
+    private MultipartFile Data;
+    private Integer videoDuration; // 영상 재생시간
+
 }

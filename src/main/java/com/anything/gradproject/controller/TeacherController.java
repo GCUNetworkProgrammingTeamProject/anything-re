@@ -44,7 +44,7 @@ public class TeacherController {
 
     // 강의 목록 출력
     @GetMapping("/lectures")
-    public ResponseEntity<List<Lectures>> printLectures(@RequestHeader("Authorization")String token) {
+    public ResponseEntity<List<Lectures>> printLectures(@RequestHeader("Authorization") String token) {
 
         List<Lectures> lecturesList = lectureService.findUserLectureList(memberService.findMemberByToken(token));
         return ResponseEntity.ok(lecturesList);
@@ -54,16 +54,10 @@ public class TeacherController {
 
     // 강의 등록
     @PostMapping("/lectures")
-    public ResponseEntity<String> createLectures(@RequestBody LecturesFormDto lecturesFormDto,
+    public ResponseEntity<String> createLectures(@RequestBody LecturesFormDto dto,
             @RequestHeader("Authorization")String token) throws IOException {
         try {
-//
-
-            Lectures lectures = Lectures.createLectures(lecturesFormDto, memberService.findMemberByToken(token));
-            String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
-	    lectures.setLecturesType(lectureService.setLecturesType(lecturesFormDto.getLecturesType()));
-            lectures.setLectureImage(fileName);
-            lecturesRepository.save(lectures);
+            lectureService.saveLecture(dto, memberService.findMemberByToken(token));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }

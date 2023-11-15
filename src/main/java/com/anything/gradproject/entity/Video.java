@@ -1,6 +1,7 @@
 package com.anything.gradproject.entity;
 
 
+import com.anything.gradproject.dto.LecturesFormDto;
 import com.anything.gradproject.dto.VideoFormDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,6 +44,22 @@ public class Video extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "lectureSeq")
     private Lectures lectures;
+
+    @Builder
+    public Video(String videoPath, String dataPath, Lectures lectures, LecturesFormDto dto) {
+
+        this.videoContent = videoPath;
+        this.videoIndex = 1;
+        if (dto.getVideoDuration() == null) {
+            this.videoLength = 1;
+        } else {
+            this.videoLength = dto.getVideoDuration();
+        }
+        this.videoLectureData = dataPath;
+        this.lectures = lectures;
+        this.videoName = lectures.getLectureName();
+
+    }
 
     public static Video createVideo(VideoFormDto videoFormDto, Lectures lectures) {
 

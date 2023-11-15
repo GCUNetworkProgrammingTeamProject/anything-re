@@ -53,21 +53,19 @@ public class Lectures extends BaseEntity{
 
 
 
-//    @Builder
-//    public Lectures (LecturesFormDto dto, Member member, LecturesType type) {
-//
-//        this.lectureContent = dto.getLectureContent();
-//        this.lectureIndex = dto.getLectureIndex();
-//        this.lecturePrice = dto.getLecturePrice();
-//        this.lectureName = dto.getLectureName();
-//        this.lectureImage = dto.getLecturesImg();
-//        this.member = member;
-//        this.lectureRecommend = false;
-//        this.lectureScore = 0.0;
-//        this.lecturesType = type;
-//    }
-
     @Builder
+    public Lectures (LecturesFormDto dto, Member member, LecturesType type) {
+        this.lectureContent = dto.getLectureContent();
+        this.lectureIndex = dto.getLectureIndex();
+        this.lecturePrice = dto.getLecturePrice();
+        this.lectureName = dto.getLectureName();
+        this.member = member;
+        this.lectureRecommend = false;
+        this.lectureScore = 0.0;
+        this.lecturesType = type;
+    }
+
+
     public static Lectures createLectures(LecturesFormDto lecturesFormDto, Member member) {
 
         Lectures lectures = new Lectures();
