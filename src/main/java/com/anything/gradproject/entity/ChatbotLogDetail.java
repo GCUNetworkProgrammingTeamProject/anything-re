@@ -3,9 +3,11 @@ package com.anything.gradproject.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity @Getter
 @Table(name = "tb_chatbot_log_detail")
+@NoArgsConstructor
 public class ChatbotLogDetail {
 
     @Id
