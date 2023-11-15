@@ -1,9 +1,7 @@
 package com.anything.gradproject.service;
 
 import com.anything.gradproject.constant.Role;
-import com.anything.gradproject.dto.CommentResponseDto;
-import com.anything.gradproject.dto.CommunityCommentDto;
-import com.anything.gradproject.dto.PostResponseDto;
+import com.anything.gradproject.dto.*;
 import com.anything.gradproject.entity.CommunityComment;
 import com.anything.gradproject.entity.CommunityPost;
 import com.anything.gradproject.entity.Member;
@@ -53,4 +51,19 @@ public class CommunityCommentService {
         }
 
     }
+    @Transactional
+    public void updateComment(long coId, CommentUpdateDto dto, Member member) {
+        CommunityComment comment = communityCommentRepository.findById(coId).orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+        if (comment.getMember().getUserSeq().equals(member.getUserSeq()) || member.getRole().equals(Role.ADMIN)) {
+            try {
+                comment.setCcContent(dto.getContent());
+            } catch (Exception e) {
+                throw new RuntimeException("댓글 업데이트 중 오류가 발생했습니다.");
+            }
+        } else {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
+
+    }
+
 }

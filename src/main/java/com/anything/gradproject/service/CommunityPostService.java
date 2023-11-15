@@ -2,6 +2,7 @@ package com.anything.gradproject.service;
 
 import com.anything.gradproject.constant.Role;
 import com.anything.gradproject.dto.CommunityPostDto;
+import com.anything.gradproject.dto.MemberUpdateDto;
 import com.anything.gradproject.dto.PostResponseDto;
 import com.anything.gradproject.entity.CommunityPost;
 import com.anything.gradproject.entity.Member;
@@ -51,8 +52,7 @@ public class CommunityPostService {
     }
 
     public PostResponseDto convertToDto(CommunityPost communityPost) {
-        PostResponseDto dto = new PostResponseDto(communityPost);
-        return dto;
+        return  new PostResponseDto(communityPost);
     }
 
 
@@ -86,16 +86,32 @@ public class CommunityPostService {
     }
 
     @Transactional
-    public CommunityPost update(long PostId, CommunityPostDto communityPostDto, Member member) {
+    public CommunityPost update(long PostId, CommunityPostDto dto, Member member) {
         CommunityPost communityPost = communityPostRepository.findById(PostId)
                 .orElseThrow(() -> new IllegalArgumentException("not found:" + PostId));
         if (communityPost.getMember().getUserSeq().equals(member.getUserSeq()) || member.getRole().equals(Role.ADMIN)) {
-            communityPost.update(communityPostDto.getCpTitle(), communityPostDto.getCpContent(), member);
+            try {
+                if (dto.getCpContent() != null) {
+                    communityPost.setCpContent(dto.getCpContent());
+                }
+                if (dto.getCpTitle() != null) {
+                    communityPost.setCpTitle(dto.getCpTitle());
+                }
+                if (dto.getCpType() != null) {
+                    if (dto.getCpType().equals("0")) {
+                        communityPost.setCpType(false);
+                    }
+                    if (dto.getCpType().equals("1")) {
+                        communityPost.setCpType(true);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("회원 정보 업데이트 중 오류가 발생했습니다.");
+            }
+
         } else {
             throw new IllegalStateException("권한이 없습니다.");
         }
-
-
         return communityPost;
     }
 

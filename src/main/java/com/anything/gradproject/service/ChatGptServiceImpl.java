@@ -64,19 +64,19 @@ public class ChatGptServiceImpl implements ChatGptService {
             JSONObject message = (JSONObject) choise.get("message");
             String content = (String) message.get("content");
             System.out.println(content);
-            if (chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videSeq, member.getUserSeq()) == null) {
+            if (chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videSeq, member.getUserSeq()).isEmpty()) {
                 Video video = videoRepository.findByVideoSeq(videSeq).orElseThrow();
-                ChatbotLog chatbotLog = new ChatbotLog();
-                chatbotLog.setMember(member);
-                chatbotLog.setVideo(video);
-                ChatbotLog saveChatbotLog = chatbotLogRepository.save(chatbotLog);
+                ChatbotLog chatbotLog1 = new ChatbotLog();
+                chatbotLog1.setMember(member);
+                chatbotLog1.setVideo(video);
+                ChatbotLog saveChatbotLog = chatbotLogRepository.save(chatbotLog1);
                 ChatbotLogDetail chatbotLogDetail = new ChatbotLogDetail(messages, content, saveChatbotLog);
                 chatbotLogDetailRepository.save(chatbotLogDetail);
 
             } else {
-                ChatbotLog chatbotLog = chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videSeq, member.getUserSeq());
-                ChatbotLogDetail chatbotLogDetail = new ChatbotLogDetail(messages, content, chatbotLog);
-                chatbotLogDetailRepository.save(chatbotLogDetail);
+                ChatbotLog chatbotLog = chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videSeq, member.getUserSeq()).orElseThrow(()->new IllegalArgumentException("해당 강의에 대한 챗봇로그 정보를 찾을 수 없습니다."));
+                ChatbotLogDetail chatbotLogDetail1 = new ChatbotLogDetail(messages, content, chatbotLog);
+                chatbotLogDetailRepository.save(chatbotLogDetail1);
             }
             return content;
 

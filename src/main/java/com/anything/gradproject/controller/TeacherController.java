@@ -57,9 +57,10 @@ public class TeacherController {
 
     // 강의 등록
     @PostMapping("/lectures")
-    public ResponseEntity<String> createLectures( LecturesFormDto lecturesFormDto,
+    public ResponseEntity<String> createLectures(@RequestBody LecturesFormDto lecturesFormDto,
             @RequestHeader("Authorization")String token) throws IOException {
         try {
+
             Lectures lectures = Lectures.createLectures(lecturesFormDto, memberService.findMemberByToken(token));
             String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
 	    lectures.setLecturesType(lectureService.setLecturesType(lecturesFormDto.getLecturesType()));

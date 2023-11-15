@@ -2,6 +2,7 @@ package com.anything.gradproject.controller.api;
 
 import com.anything.gradproject.auth.PrincipalDetail;
 import com.anything.gradproject.dto.CommentResponseDto;
+import com.anything.gradproject.dto.CommentUpdateDto;
 import com.anything.gradproject.dto.CommunityCommentDto;
 import com.anything.gradproject.service.CommunityCommentService;
 import com.anything.gradproject.service.CommunityPostService;
@@ -64,7 +65,13 @@ public class CcApiController {
     }
 
     @PatchMapping("/community/comments/{coId}")
-    public ResponseEntity<String> updateComment(@PathVariable long coId, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.status(HttpStatus.OK).body("댓글 수정 완료");
+    public ResponseEntity<String> updateComment(@PathVariable long coId, @RequestBody CommentUpdateDto dto,  @RequestHeader("Authorization") String token) {
+        try {
+            communityCommentService.updateComment(coId, dto, memberService.findMemberByToken(token));
+            return ResponseEntity.status(HttpStatus.OK).body("댓글 수정 완료");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 }

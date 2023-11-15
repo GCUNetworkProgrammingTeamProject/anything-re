@@ -296,6 +296,8 @@ public class MemberController {
     public ResponseEntity<String> createShopping(@PathVariable long lectureSeq, @RequestHeader("Authorization")String token) {
         try {
             Member member = memberService.findMemberByToken(token);
+//            shoppingService.saveShopping(lectureSeq, member);
+
             ShoppingList shoppingList = ShoppingList.createShoppingList(lecturesRepository.findBylectureSeq(lectureSeq).get(), member);
             shoppingService.saveShoppingList(shoppingList, member);
         } catch (IllegalStateException e) {
@@ -318,7 +320,7 @@ public class MemberController {
 
     // 장바구니 목록 출력
     @GetMapping(value = "/users/shoplist/list")
-    public ResponseEntity<List<Lectures>> printShoppingList(){
+    public ResponseEntity<List<Lectures>> printShoppingList(@RequestHeader("Authorization")String token){
         List<Lectures> lecturesList = null;
         List<ShoppingList> shoppingLists = shoppingListRepository.findAll();
         for (ShoppingList s: shoppingLists)

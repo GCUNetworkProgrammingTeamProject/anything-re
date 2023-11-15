@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "tb_community_post")
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 public class CommunityPost extends BaseEntity{
