@@ -1,19 +1,14 @@
 package com.anything.gradproject.service;
 
 import com.anything.gradproject.constant.LecturesType;
-import com.anything.gradproject.constant.Role;
-import com.anything.gradproject.dto.*;
-import com.anything.gradproject.entity.Lectures;
-import com.anything.gradproject.entity.Member;
-import com.anything.gradproject.entity.PersonalVideo;
-import com.anything.gradproject.repository.LecturesRepository;
-import com.anything.gradproject.repository.PersonalVideoRepository;
+import com.anything.gradproject.dto.LectureResponseDto;
+import com.anything.gradproject.dto.LecturesFormDto;
+import com.anything.gradproject.dto.PersonalVideoRequestDto;
 import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 

@@ -35,6 +35,7 @@ public class Advertisement extends BaseEntity{
     private String adverImage; // 광고 이미지
 
 
+
     public static Advertisement createAdvertisement(AdvertiseFormDto advertiseFormDto) {
 
         Advertisement advertisement = new Advertisement();
@@ -57,4 +58,5 @@ public class Advertisement extends BaseEntity{
 
         return advertisement;
     }
+
 }
