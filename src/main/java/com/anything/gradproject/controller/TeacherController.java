@@ -54,13 +54,17 @@ public class TeacherController {
 
     // 강의 등록
     @PostMapping("/lectures")
-    public ResponseEntity<String> createLectures(
-            @RequestPart MultipartFile file,
-            @RequestPart LecturesFormDto lecturesFormDto,
+    public ResponseEntity<String> createLectures(@RequestBody LecturesFormDto lecturesFormDto,
             @RequestHeader("Authorization")String token) throws IOException {
         try {
-            lectureService.saveLecture(lecturesFormDto, memberService.findMemberByToken(token), file);
-        } catch (Exception e) {
+//
+
+            Lectures lectures = Lectures.createLectures(lecturesFormDto, memberService.findMemberByToken(token));
+            String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
+	    lectures.setLecturesType(lectureService.setLecturesType(lecturesFormDto.getLecturesType()));
+            lectures.setLectureImage(fileName);
+            lecturesRepository.save(lectures);
+        } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("강의 등록 완료");
@@ -68,15 +72,16 @@ public class TeacherController {
 
 
     // 강의 수정
-    @PatchMapping("/lectures/{lectureSeq}")
-    public ResponseEntity<String> updateLectures(
-            @PathVariable long lectureSeq,
-            @RequestPart LectureUpdateDto dto,
-            @RequestPart(required = false) MultipartFile file,
-            @RequestHeader("Authorization")String token) throws IOException {
+    @PutMapping("/lectures/{lectureSeq}")
+    public ResponseEntity<String> updateLectures(@PathVariable long lectureSeq, LecturesFormDto lecturesFormDto) throws IOException {
 
         try {
-            lectureService.updateLecture(lectureSeq, dto, memberService.findMemberByToken(token), file);
+            Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
+            lectures.setLectureImage(lectures.getLectureImage().substring(0, lectures.getLectureImage().lastIndexOf(".")));
+            Lectures.modifyLectures(lecturesFormDto, lectures);
+            String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
+            lectures.setLectureImage(fileName);
+            lecturesRepository.save(lectures);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
@@ -86,11 +91,12 @@ public class TeacherController {
 
     // 강의 삭제
     @DeleteMapping("/lectures/{lectureSeq}")
-    public ResponseEntity<String> deleteLectures(
-            @PathVariable long lectureSeq,
-            @RequestHeader("Authorization")String token) {
+    public ResponseEntity<String> deleteLectures(@PathVariable long lectureSeq) {
+
         try {
-            lectureService.deleteLecture(lectureSeq, memberService.findMemberByToken(token));
+            Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
+            fileService.removeFile(lectures.getLectureImage());
+            lecturesRepository.delete(lectures);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
@@ -116,6 +122,7 @@ public class TeacherController {
     public ResponseEntity<String> createVideo(@PathVariable long lectureSeq, VideoFormDto videoFormDto) throws IOException {
 
         try {
+//            videoService.saveVideo(lectureSeq, dto, memberService.findMemberByToken(token), video, data);
             Video video = Video.createVideo(videoFormDto, videoService.findLecture(lectureSeq));
 
             // 이미지 업로드

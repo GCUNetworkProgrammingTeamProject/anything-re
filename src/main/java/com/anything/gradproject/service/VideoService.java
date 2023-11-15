@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,6 +32,7 @@ public class VideoService {
 
     private final  LecturesRepository lecturesRepository;
     private final  VideoRepository videoRepository;
+    private final FileService fileService;
 
 
     public Video findModifyVideo(Long videoSeq){
@@ -99,5 +101,11 @@ public class VideoService {
         dto.setIndex(video.getVideoIndex());
         dto.setVideoLectureData(video.getVideoLectureData());
         return dto;
+    }
+
+    public void saveVideo(long lectureSeq, VideoFormDto dto, Member member, MultipartFile videoFile, MultipartFile data) {
+        String saveVideoPath = fileService.saveFile2(videoFile);
+        String saveDataPath = fileService.saveFile2(data);
+        Video video =new Video();
     }
 }

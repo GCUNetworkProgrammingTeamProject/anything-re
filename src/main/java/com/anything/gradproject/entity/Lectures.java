@@ -53,37 +53,37 @@ public class Lectures extends BaseEntity{
 
 
 
-    @Builder
-    public Lectures (LecturesFormDto dto, Member member, LecturesType type) {
-
-        this.lectureContent = dto.getLectureContent();
-        this.lectureIndex = dto.getLectureIndex();
-        this.lecturePrice = dto.getLecturePrice();
-        this.lectureName = dto.getLectureName();
-        this.lectureImage = dto.getLecturesImg();
-        this.member = member;
-        this.lectureRecommend = false;
-        this.lectureScore = 0.0;
-        this.lecturesType = type;
-    }
-
 //    @Builder
-//    public static Lectures createLectures(LecturesFormDto lecturesFormDto, Member member) {
+//    public Lectures (LecturesFormDto dto, Member member, LecturesType type) {
 //
-//        Lectures lectures = new Lectures();
-//
-//        String code = UUID.randomUUID().toString();
-//        lectures.setLectureName(lecturesFormDto.getLectureName());
-//        lectures.setLectureContent(lecturesFormDto.getLectureContent());
-//        lectures.setLectureIndex(lecturesFormDto.getLectureIndex());
-//        lectures.setLecturePrice(lecturesFormDto.getLecturePrice());
-//        lectures.setLectureScore(0);
-//        lectures.setMember(member);
-//        lectures.setLectureImage("Lectures" + code);
-//        lectures.setLectureRecommend(false);
-//
-//        return lectures;
+//        this.lectureContent = dto.getLectureContent();
+//        this.lectureIndex = dto.getLectureIndex();
+//        this.lecturePrice = dto.getLecturePrice();
+//        this.lectureName = dto.getLectureName();
+//        this.lectureImage = dto.getLecturesImg();
+//        this.member = member;
+//        this.lectureRecommend = false;
+//        this.lectureScore = 0.0;
+//        this.lecturesType = type;
 //    }
+
+    @Builder
+    public static Lectures createLectures(LecturesFormDto lecturesFormDto, Member member) {
+
+        Lectures lectures = new Lectures();
+
+        String code = UUID.randomUUID().toString();
+        lectures.setLectureName(lecturesFormDto.getLectureName());
+        lectures.setLectureContent(lecturesFormDto.getLectureContent());
+        lectures.setLectureIndex(lecturesFormDto.getLectureIndex());
+        lectures.setLecturePrice(lecturesFormDto.getLecturePrice());
+        lectures.setLectureScore(0);
+        lectures.setMember(member);
+        lectures.setLectureImage("Lectures" + code);
+        lectures.setLectureRecommend(false);
+
+        return lectures;
+    }
 
 
     public static Lectures modifyLectures(LecturesFormDto lecturesFormDto, Lectures lectures) {

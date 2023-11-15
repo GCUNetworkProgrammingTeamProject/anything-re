@@ -28,10 +28,10 @@ public class Video extends BaseEntity {
     private String videoName; // 영상 이름
 
     @Column
-    private String videoContent; // 영상 내용
+    private String videoContent; // 영상 filePath
 
     @Column
-    private int videoIndex; // 영상 순서
+    private int videoIndex; // 강의 내 영상 순서
 
     @Column
     private int videoLength; // 영상 총 길이(초단위)
