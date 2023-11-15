@@ -1,19 +1,13 @@
 package com.anything.gradproject.service;
 
 import com.anything.gradproject.constant.LecturesType;
-import com.anything.gradproject.constant.Role;
-import com.anything.gradproject.dto.*;
-import com.anything.gradproject.entity.Lectures;
-import com.anything.gradproject.entity.Member;
-import com.anything.gradproject.entity.PersonalVideo;
-import com.anything.gradproject.repository.LecturesRepository;
-import com.anything.gradproject.repository.PersonalVideoRepository;
+import com.anything.gradproject.dto.LectureResponseDto;
+import com.anything.gradproject.dto.PersonalVideoRequestDto;
 import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -26,7 +20,10 @@ public class LectureService {
     private final LecturesRepository lecturesRepository;
     private final PersonalVideoRepository personalVideoRepository;
     private final LectureReviewRepository lectureReviewRepository;
+<<<<<<< HEAD
 //    private final FileService fileService;
+=======
+>>>>>>> 2cc194d (231116)
 
     public LecturesType setLecturesType(String str){
         LecturesType lecturesType;
@@ -70,7 +67,8 @@ public class LectureService {
     }
 
     public List<Lectures> findUserLectureList(Member member) {
-        return lecturesRepository.findBymember(member);
+        return lecturesRepository.findByMember_UserSeq(member.getUserSeq());
+
     }
 
 
@@ -108,6 +106,7 @@ public class LectureService {
         dto.setAuthorName(lectures.getMember().getName());
         return dto;
     }
+<<<<<<< HEAD
 
 //    public void saveLecture(LecturesFormDto dto, Member member, MultipartFile file) {
 //        String saveFilePath = fileService.saveFile2(file);
@@ -159,4 +158,6 @@ public class LectureService {
 //            }
 //        }
 //    }
+=======
+>>>>>>> 2cc194d (231116)
 }

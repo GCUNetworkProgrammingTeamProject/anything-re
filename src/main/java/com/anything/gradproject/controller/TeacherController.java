@@ -45,7 +45,7 @@ public class TeacherController {
     // 강의 목록 출력
     @GetMapping("/lectures")
     public ResponseEntity<List<Lectures>> printLectures(@RequestHeader("Authorization")String token) {
-
+        System.out.println(token);
         List<Lectures> lecturesList = lectureService.findUserLectureList(memberService.findMemberByToken(token));
         return ResponseEntity.ok(lecturesList);
     }
@@ -53,12 +53,19 @@ public class TeacherController {
 
 
     // 강의 등록
+<<<<<<< HEAD
     @PostMapping("/lectures")
     public ResponseEntity<String> createLectures(@RequestBody LecturesFormDto lecturesFormDto,
             @RequestHeader("Authorization")String token) throws IOException {
         try {
 //
 
+=======
+   @PostMapping("/lectures")
+    public ResponseEntity<String> createLectures(  LecturesFormDto lecturesFormDto,
+            @RequestHeader("Authorization")String token) throws IOException {
+        try {
+>>>>>>> 2cc194d (231116)
             Lectures lectures = Lectures.createLectures(lecturesFormDto, memberService.findMemberByToken(token));
             String fileName = fileService.saveFile(lecturesFormDto.getLectureImage(), lectures.getLectureImage());
 	    lectures.setLecturesType(lectureService.setLecturesType(lecturesFormDto.getLecturesType()));
@@ -70,7 +77,15 @@ public class TeacherController {
         return ResponseEntity.status(HttpStatus.CREATED).body("강의 등록 완료");
     }
 
+    // // 강의 수정
+    // @PatchMapping("/lectures/{lectureSeq}")
+    // public ResponseEntity<String> updateLectures(
+    //         @PathVariable long lectureSeq,
+    //         @RequestPart LectureUpdateDto dto,
+    //         @RequestPart(required = false) MultipartFile file,
+    //         @RequestHeader("Authorization")String token) throws IOException {
 
+<<<<<<< HEAD
     // 강의 수정
     @PutMapping("/lectures/{lectureSeq}")
     public ResponseEntity<String> updateLectures(@PathVariable long lectureSeq, LecturesFormDto lecturesFormDto) throws IOException {
@@ -101,8 +116,30 @@ public class TeacherController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
         return ResponseEntity.status(HttpStatus.OK).body("강의 삭제 완료");
+=======
+    //     try {
+    //         lectureService.updateLecture(lectureSeq, dto, memberService.findMemberByToken(token), file);
+    //     } catch (IllegalStateException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
+    //     }
+    //     return ResponseEntity.status(HttpStatus.OK).body("강의 변경 완료");
+    // }
 
-    }
+
+    // // 강의 삭제
+    // @DeleteMapping("/lectures/{lectureSeq}")
+    // public ResponseEntity<String> deleteLectures(
+    //         @PathVariable long lectureSeq,
+    //         @RequestHeader("Authorization")String token) {
+    //     try {
+    //         lectureService.deleteLecture(lectureSeq, memberService.findMemberByToken(token));
+    //     } catch (IllegalStateException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
+    //     }
+    //     return ResponseEntity.status(HttpStatus.OK).body("강의 삭제 완료");
+>>>>>>> 2cc194d (231116)
+
+    // }
 
 
 

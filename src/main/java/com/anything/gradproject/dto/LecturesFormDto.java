@@ -29,8 +29,14 @@ public class LecturesFormDto {
 
     @NotEmpty(message = "강의 섬네일을 입력해 주세요")
     private MultipartFile lectureImage;
+<<<<<<< HEAD
 
     @NotEmpty(message = "강의 카테고리를 입력해 주세요")
     private String lecturesType;
 
+=======
+    
+    @NotEmpty(message = "강의 카테고리를 입력해 주세요")
+    private String lecturesType;
+>>>>>>> 2cc194d (231116)
 }

@@ -116,12 +116,14 @@ public class AdminController {
 
     // 메인 배너에 올릴 광고 선택
     @PostMapping("/admin/ad/select")
-    public ResponseEntity<Advertisement> selectMainAdvers(@RequestBody Long selectedList){
-        Advertisement advertisements = advertisementRepository.findByadverSeq(selectedList);
-
-        return ResponseEntity.ok(advertisements);
+    public ResponseEntity<String> selectMainAdvers(@RequestBody Long adverSeq){
+        try {
+            Advertisement advertisements = advertisementRepository.findByadverSeq(adverSeq);
+        }catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("강의 변경 완료");
     }
-
 
 
     // 강의 목록 출력
@@ -143,25 +145,18 @@ public class AdminController {
     }
 
     // 추천 강의 등록
-    @PostMapping("/admin/lectures/rec/add")
-    public ResponseEntity<String> addRecLectures(List<Long> longList){
-        for (Long l:longList) {
-            Lectures lectures = lecturesRepository.findBylectureSeq(l).get();
-            lectures.setLectureRecommend(true);
-        }
+    @PostMapping("/admin/lectures/rec/{lectureSeq}")
+    public ResponseEntity<String> addRecLectures(@PathVariable long lectureSeq){
+        lecturesRepository.findBylectureSeq(lectureSeq).get().setLectureRecommend(true);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 등록 완료");
     }
 
     // 추천 강의 삭제
-    @PostMapping("/admin/lectures/rec/remove")
-    public ResponseEntity<String> removeRecLectures(List<Long> longList){
-        for (Long l:longList) {
-            Lectures lectures = lecturesRepository.findBylectureSeq(l).get();
-            lectures.setLectureRecommend(false);
-        }
+    @DeleteMapping("/admin/lectures/rec/{lectureSeq}")
+    public ResponseEntity<String> deleteRecLectures(@PathVariable long lectureSeq){
+        lecturesRepository.findBylectureSeq(lectureSeq).get().setLectureRecommend(false);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 삭제 완료");
     }
-
 
 
     @GetMapping("/admin/Teacher") // 강사등록신청 조회
