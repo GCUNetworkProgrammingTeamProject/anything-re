@@ -48,12 +48,12 @@ public class TeacherDetail  {
 
 
     @Builder
-    public TeacherDetail(TeacherDetailFormDto dto, Member member) {
+    public TeacherDetail(TeacherDetailFormDto dto, Member member, String saveFileName) {
         this.member = member;
         this.teacherCareer = dto.getTeacherCareer();
         this.teacherField = dto.getTeacherField();
         this.teacherIntro = dto.getTeacherIntro();
-        this.teacherImg = dto.getSaveFilePath();
+        this.teacherImg = saveFileName;
     }
 
 

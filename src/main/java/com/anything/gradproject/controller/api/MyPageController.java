@@ -49,12 +49,11 @@ public class MyPageController {
 //
     @PostMapping("/teacher/detail")  // 강사 등록 신청
     public ResponseEntity<String> setTeacherDetail(
-            @RequestPart TeacherDetailFormDto teacherDetailFormDto,
-            @RequestPart("file") MultipartFile file,
+            TeacherDetailFormDto teacherDetailFormDto,
             @RequestHeader("Authorization")String token) throws Exception {
         try {
 
-            teacherDetailService.saveTeacherDetail(teacherDetailFormDto, memberService.findMemberByToken(token), file);
+            teacherDetailService.saveTeacherDetail(teacherDetailFormDto, memberService.findMemberByToken(token));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

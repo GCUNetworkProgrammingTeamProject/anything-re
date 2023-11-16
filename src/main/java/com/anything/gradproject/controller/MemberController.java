@@ -146,7 +146,10 @@ public class MemberController {
 
     // 영상의 문의,답변 목록 출력
     @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<List<InquiryResponseDto>> printPurchaseInquiry(@PathVariable long lectureSeq, @PathVariable long videoSeq, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<InquiryResponseDto>> printPurchaseInquiry(
+            @PathVariable long lectureSeq,
+            @PathVariable long videoSeq,
+            @RequestHeader("Authorization") String token) {
         List<InquiryResponseDto> dtoList = inquiryService.findAllQuery(videoSeq);
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
@@ -154,7 +157,11 @@ public class MemberController {
 
     // 문의 등록
     @PostMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<String> createPurchaseInquiry(@PathVariable long videoSeq, @RequestBody InquiryFormDto dto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> createPurchaseInquiry(
+            @PathVariable long lectureSeq,
+            @PathVariable long videoSeq,
+            @RequestBody InquiryFormDto dto,
+            @RequestHeader("Authorization") String token) {
         try {
             inquiryService.saveInquiry(dto, memberService.findMemberByToken(token), videoSeq);
         } catch (IllegalStateException e) {
@@ -166,16 +173,17 @@ public class MemberController {
 
 
     // 문의 수정
-    @PutMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<String> updatePurchaseInquiry(@PathVariable long videoSeq, InquiryFormDto inquiryFormDto) {
+    @PatchMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
+    public ResponseEntity<String> updatePurchaseInquiry(
+            @PathVariable long lectureSeq,
+            @PathVariable long videoSeq,
+            InquiryFormDto dto) {
         try {
-            Inquiry inquiry = inquiryService.findModifyInquiry(videoSeq);
-            Inquiry.modifyInquiry(inquiryFormDto, inquiry);
-            inquiryRepository.save(inquiry);
+            inquiryService.updateInquiry(videoSeq, dto);
+
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
-
         return ResponseEntity.status(HttpStatus.OK).body("문의 수정 완료");
     }
 
@@ -196,7 +204,7 @@ public class MemberController {
     @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}/{inquirySeq}")
     public ResponseEntity<List<InquiryAnswer>> printInquiryAnswer(@PathVariable long inquirySeq) {
 
-        List<InquiryAnswer> inquiryAnswerList = inquiryAnswerRepository.findByInquiry(inquiryRepository.findByInquirySeq(inquirySeq));
+        List<InquiryAnswer> inquiryAnswerList = inquiryAnswerRepository.findByInquiry(inquiryRepository.findByInquirySeq(inquirySeq).orElseThrow(()->new IllegalArgumentException("찾을수없음")));
         return ResponseEntity.ok(inquiryAnswerList);
     }
 

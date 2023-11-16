@@ -191,7 +191,7 @@ public class TeacherController {
     @GetMapping ("/lectures/{lectureSeq}/video/{videoSeq}/inquiry/{inquirySeq}")
     public ResponseEntity<List<InquiryAnswer>> printInquiryAnswer(@PathVariable long inquirySeq) {
 
-        List<InquiryAnswer> inquiryAnswerList=inquiryAnswerRepository.findByInquiry(inquiryRepository.findByInquirySeq(inquirySeq));
+        List<InquiryAnswer> inquiryAnswerList=inquiryAnswerRepository.findByInquiry(inquiryRepository.findByInquirySeq(inquirySeq).orElseThrow(()->new IllegalArgumentException("해당 질문이 존재 하지 않습니다.")));
 
         return ResponseEntity.ok(inquiryAnswerList);
     }
@@ -202,8 +202,8 @@ public class TeacherController {
                                                       @RequestHeader("Authorization")String token){
 
         try{
-            Inquiry inquiry = inquiryRepository.findByInquirySeq(inquirySeq);
-            InquiryAnswer inquiryAnswer = InquiryAnswer.createInquiryAnswer(inquiryAnswerString, memberService.findMemberByToken(token), inquiryRepository.findByInquirySeq(inquirySeq));
+            Inquiry inquiry = inquiryRepository.findByInquirySeq(inquirySeq).orElseThrow((()->new IllegalArgumentException("해당 질문이 존재 하지 않습니다.")));
+            InquiryAnswer inquiryAnswer = InquiryAnswer.createInquiryAnswer(inquiryAnswerString, memberService.findMemberByToken(token), inquiryRepository.findByInquirySeq(inquirySeq).orElseThrow((()->new IllegalArgumentException("해당 질문이 존재 하지 않습니다."))));
             inquiryAnswerRepository.save(inquiryAnswer);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력

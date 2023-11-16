@@ -27,14 +27,24 @@ public class InquiryService {
         inquiryRepository.save((inquiry));
     }
 
-    public Inquiry findModifyInquiry(Long inquirySeq){
+    @Transactional
+    public void updateInquiry(Long inquirySeq, InquiryFormDto dto){
+        Inquiry inquiry = inquiryRepository.findByInquirySeq(inquirySeq).orElseThrow(()->new IllegalArgumentException("해당 질문이 존재 하지 않습니다."));
+        try {
+            if (dto.getInquiryTitle() != null) {
+                inquiry.setInquiryTitle(dto.getInquiryTitle());
+            } else if (dto.getInquiryQuestion() != null) {
+                inquiry.setInquiryQuestion(dto.getInquiryQuestion());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("수정 중 오류가 발생했습니다. 다시 시도해주세요");
+        }
 
-        return inquiryRepository.findByInquirySeq(inquirySeq);
     }
 
     public Inquiry findDeleteInquiry(Long inquirySeq){
-
-        return inquiryRepository.findByInquirySeq(inquirySeq);
+        Inquiry inquiry = inquiryRepository.findByInquirySeq(inquirySeq).orElseThrow(()->new IllegalArgumentException("해당 질문이 존재 하지 않습니다."));
+        return inquiry;
     }
 
 

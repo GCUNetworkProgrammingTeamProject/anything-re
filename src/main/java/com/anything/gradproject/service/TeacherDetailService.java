@@ -29,11 +29,10 @@ public class TeacherDetailService {
     private final TeacherDenyRepository teacherDenyRepository;
     private final MemberRepository memberRepository;
 
-    public void saveTeacherDetail(TeacherDetailFormDto dto, Member member, MultipartFile file) throws IOException {
-        String saveFilePath = fileService.saveFile2(file);
+    public void saveTeacherDetail(TeacherDetailFormDto dto, Member member) throws IOException {
+        String saveFileName = fileService.saveFile2(dto.getFile());
         dto.setMember(member);
-        dto.setSaveFilePath(saveFilePath);
-        TeacherDetail teacherDetail = dto.toEntity(dto, member);
+        TeacherDetail teacherDetail = dto.toEntity(dto, member, saveFileName);
         teacherDetailRepository.save(teacherDetail);
     }
 
@@ -44,12 +43,10 @@ public class TeacherDetailService {
             teacherDetail.getMember().setTeacherStatus(TeacherStatus.APPROVE);
         } else if (dto.getStatus() == 1) {
             teacherDetail.getMember().setTeacherStatus(TeacherStatus.REFUSE);
-            TeacherDeny teacherDeny = new TeacherDeny();
-            teacherDeny.builder()
+            teacherDenyRepository.save(TeacherDeny.builder()
                     .teacherDetail(teacherDetail)
                     .denyReason(dto.getReason())
-                    .build();
-            teacherDenyRepository.save(teacherDeny);
+                    .build());
         }
     }
 
