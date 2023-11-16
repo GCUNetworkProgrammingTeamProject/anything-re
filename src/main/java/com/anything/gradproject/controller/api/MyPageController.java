@@ -83,9 +83,9 @@ public class MyPageController {
     public ResponseEntity<List<ChatbotResponseDto>> getLecChatbot(
             @PathVariable long videoSeq,
             @RequestHeader("Authorization")String token) {
-        // System.out.println(videoSeq);
+
         List<ChatbotResponseDto> dtoList = chatbotService.printChatbot(videoSeq,memberService.findMemberByToken(token));
-        // System.out.println(dtoList);
+
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
 
