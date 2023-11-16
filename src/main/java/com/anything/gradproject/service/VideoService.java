@@ -79,11 +79,12 @@ public class VideoService {
 
 
     public List<VideoResponseDto> findVideo(long lectureSeq) {
-        List<Long> videoSeqList;
-        List<Video> videoList = videoRepository.findByLectures_LectureSeq(lectureSeq);
-        return videoList.stream()
-                .map(this::entityToDto)
-                .collect(Collectors.toList());
+        try {
+            List<Video> videoList = videoRepository.findByLectures_LectureSeq(lectureSeq);
+            return videoList.stream().map(this::entityToDto).toList();
+        } catch (Exception e) {
+            throw new RuntimeException("비디오를 찾는 도중 오류 발생");
+        }
     }
 
     public VideoResponseDto entityToDto(Video video) {

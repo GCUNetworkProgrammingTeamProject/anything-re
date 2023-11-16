@@ -34,11 +34,13 @@ public class TeacherController {
 
     // 강의 안에 동영상 출력
     @GetMapping("/lectures/v/{lectureSeq}")
-    public ResponseEntity<List<VideoResponseDto>> printVideov(@PathVariable long lectureSeq) {
-
-        List<VideoResponseDto> dtoList = videoService.findVideo(lectureSeq);
-
-        return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+    public ResponseEntity<Object> printVideov(@PathVariable long lectureSeq) {
+        try {
+            List<VideoResponseDto> dtoList = videoService.findVideo(lectureSeq);
+            return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 
