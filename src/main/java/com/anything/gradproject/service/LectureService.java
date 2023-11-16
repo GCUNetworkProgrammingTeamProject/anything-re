@@ -111,10 +111,10 @@ public class LectureService {
     @Transactional
     public void saveLecture(LecturesFormDto dto, Member member) {
         //파일 저장
-        String saveImagePath = fileService.saveFile2(dto.getLectureImage());
+        String saveImageName = fileService.saveFile2(dto.getLectureImage());
         LecturesType type = setLecturesType(dto.getLecturesType());
         Lectures lectures = new Lectures(dto, member, type);
-        lectures.setLectureImage(saveImagePath);
+        lectures.setLectureImage(saveImageName);
         Lectures savedLecture = lecturesRepository.save(lectures);
         videoService.saveVideo(savedLecture, dto);
     }

@@ -98,9 +98,9 @@ public class VideoService {
     }
 
     public void saveVideo(Lectures lectures, LecturesFormDto dto) {
-        String saveVideoPath = fileService.saveFile2(dto.getVideo());
-        String saveDataPath = fileService.saveFile2(dto.getData());
-        Video video =new Video(saveVideoPath, saveDataPath, lectures, dto);
+        String saveVideoName = fileService.saveFile2(dto.getVideo());
+        String saveDataName = fileService.saveFile2(dto.getData());
+        Video video =new Video(saveVideoName, saveDataName, lectures, dto);
         videoRepository.save(video);
     }
 

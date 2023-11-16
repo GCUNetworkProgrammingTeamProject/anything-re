@@ -69,7 +69,7 @@ public class FileService {
         try {
             File saveFile = new File(saveFilePath);
             file.transferTo(saveFile);
-            return saveFilePath;
+            return randomName + extension;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("파일 업로드 중 오류가 발생했스빈다.", e);
