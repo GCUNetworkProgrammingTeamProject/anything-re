@@ -62,7 +62,7 @@ public class MyPageController {
     }
 
     @GetMapping("/teachers/detail") // 강사 등록 승인 현황 조회
-    public ResponseEntity<?> printTeacher(@RequestHeader("Authorization")String token) {
+    public ResponseEntity<Object> printTeacher(@RequestHeader("Authorization")String token) {
         try {
             TeacherDetailResponseDto dto = teacherDetailService.getMyTeacherDetail(memberService.findMemberByToken(token).getUserSeq());
             return ResponseEntity.status(HttpStatus.OK).body(dto);

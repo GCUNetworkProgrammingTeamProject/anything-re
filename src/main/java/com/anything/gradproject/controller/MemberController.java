@@ -356,18 +356,6 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body("장바구니 리스트 구매 완료");
     }
 
-    // 집중도 분석권 결제
-    @GetMapping(value = "/users/analysis/order")
-    public ResponseEntity<String> analysisToOrder() {
-
-        try {
-
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("집중도 분석권 결제 완료");
-    }
-
 
     @PostMapping("/user/lectures/{videoSeq}/analysis") // (집중도 분석 요청)유저에게 녹화 파일을 받아 서버에 저장, 플라스크 서버로 전송
     public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization") String token, @PathVariable long videoSeq, @RequestParam("file") MultipartFile file) {

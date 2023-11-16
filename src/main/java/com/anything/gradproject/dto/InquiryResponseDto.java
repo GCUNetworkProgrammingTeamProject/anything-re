@@ -31,15 +31,22 @@ public class InquiryResponseDto {
         this.inquiryNotice = inquiry.isInquiryNotice();
         this.questioner = inquiry.getMember().getName();
         this.date = inquiry.getCreatedBy();
+
         List<String> answerList = new ArrayList<>();
         List<String> resList = new ArrayList<>();
-        for (InquiryAnswer answer :
-                inquiry.getInquiryAnswerList()) {
-            answerList.add(answer.getInquiryAnswer());
-            resList.add(answer.getMember().getName());
+
+        if (inquiry.getInquiryAnswerList() != null && !inquiry.getInquiryAnswerList().isEmpty()) {
+            inquiry.getInquiryAnswerList().forEach(answer -> {
+                answerList.add(answer.getInquiryAnswer());
+                resList.add(answer.getMember().getName());
+            });
         }
+
         this.inquiryAnswerList = answerList;
         this.respondentList = resList;
     }
 
-}
+
+    }
+
+
