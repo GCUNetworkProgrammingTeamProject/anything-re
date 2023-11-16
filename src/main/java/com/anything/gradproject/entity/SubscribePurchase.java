@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Table(name = "tb_subscribe_purchase")
-public class SubscribePurchase{
+public class SubscribePurchase extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -80,9 +80,24 @@ public class MemberController {
         }
     }
 
+    //구독권 결제내역 확인
+    @GetMapping("/users/subscribe")
+    public ResponseEntity<Object> mySubscribe(
+            @RequestHeader("Authorization") String token
+    ) {
+        try {
+            List<SubPurResponseDto> dtoList = purchaseService.findSubscribe(memberService.findMemberByToken(token));
+            return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
     @GetMapping("/info") // 로그인 유저 정보 반환
 
     public ResponseEntity<MemberInfoDto> getInfo(@RequestHeader("Authorization") String token) {
+
         MemberInfoDto dto = MemberService.getInfo(memberService.findMemberByToken(token));
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }

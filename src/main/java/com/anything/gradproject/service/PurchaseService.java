@@ -3,6 +3,7 @@ package com.anything.gradproject.service;
 import com.anything.gradproject.constant.SubscribeStatus;
 import com.anything.gradproject.dto.PurchaseDto;
 import com.anything.gradproject.dto.PurchaseListResponseDto;
+import com.anything.gradproject.dto.SubPurResponseDto;
 import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -86,4 +88,8 @@ public class PurchaseService {
     }
 
 
+    public List<SubPurResponseDto> findSubscribe(Member member) {
+        List<SubscribePurchase> purchaseList = subscribePurchaseRepository.findByMember_UserSeq(member.getUserSeq());
+        return purchaseList.stream().map((pur) -> SubPurResponseDto.builder().purchase(pur).build()).collect(Collectors.toList());
+    }
 }
