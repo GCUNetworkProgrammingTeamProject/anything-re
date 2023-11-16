@@ -61,13 +61,27 @@ public class MemberController {
         return ResponseEntity.ok(token);
     }
 
-//    @GetMapping("/loginCheck") //
+    //    @GetMapping("/loginCheck") //
 //    public ResponseEntity<Member> loginCheck(@RequestHeader("Authorization") String token) {
 //
 //        return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByToken(token));
 //    }
 
+    //구독권 결제
+    @PostMapping("/users/analysis/order")
+    public ResponseEntity<String> subscribe(
+            @RequestHeader("Authorization") String token,
+            @RequestBody PurchaseDto dto) { // (Integer) price 하나만 보내면 댐
+        try {
+            String result = purchaseService.subscribePurchase(memberService.findMemberByToken(token), dto);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/info") // 로그인 유저 정보 반환
+
     public ResponseEntity<MemberInfoDto> getInfo(@RequestHeader("Authorization") String token) {
         MemberInfoDto dto = MemberService.getInfo(memberService.findMemberByToken(token));
         return ResponseEntity.status(HttpStatus.OK).body(dto);
@@ -84,7 +98,7 @@ public class MemberController {
 
     // 구매한 강의 목록 출력
     @GetMapping(value = "/users/lectures")
-    public ResponseEntity<List<Lectures>> printPurchaseLectures(@RequestHeader("Authorization")String token) {
+    public ResponseEntity<List<Lectures>> printPurchaseLectures(@RequestHeader("Authorization") String token) {
 
         List<Lectures> lecturesList = purchaseService.findLecutresByMember(memberService.findMemberByToken(token));
         return ResponseEntity.ok(lecturesList);
@@ -93,12 +107,12 @@ public class MemberController {
     // 구매한 강의의 타입별 검색
     @GetMapping(value = "/users/lectures/search/{lectureType}")
     public ResponseEntity<List<Lectures>> printPurchaseType(@PathVariable String lectureType,
-                                                                @RequestHeader("Authorization")String token) {
+                                                            @RequestHeader("Authorization") String token) {
         LecturesType lecturesType = lectureService.setLecturesType(lectureType);
         List<PurchaseList> purchaseLists = purchaseListRepository.findByMemberAndLectures(memberService.findMemberByToken(token),
                 lecturesRepository.findByLecturesType(lecturesType).get());
         List<Lectures> lecturesList = null;
-        for (PurchaseList p: purchaseLists)
+        for (PurchaseList p : purchaseLists)
             lecturesList.add(p.getLectures());
 
         return ResponseEntity.ok(lecturesList);
@@ -116,7 +130,7 @@ public class MemberController {
 
     // 영상 시청
     @GetMapping(value = "/users/lectures/stream/{videoSeq}")
-    public ResponseEntity<String> sendVideoContent(@PathVariable long videoSeq){
+    public ResponseEntity<String> sendVideoContent(@PathVariable long videoSeq) {
         Video video = videoRepository.findByVideoSeq(videoSeq).get();
         return ResponseEntity.ok(video.getVideoContent());
     }
@@ -124,7 +138,7 @@ public class MemberController {
 
     // 영상의 강의 자료 내려 받을 URL 값 전송
     @GetMapping(value = "/users/lectures/download/{videoSeq}")
-    public ResponseEntity<String> downloadLectureData(@PathVariable long videoSeq){
+    public ResponseEntity<String> downloadLectureData(@PathVariable long videoSeq) {
         Video video = videoRepository.findByVideoSeq(videoSeq).get();
         return ResponseEntity.ok(video.getVideoLectureData());
     }
@@ -132,7 +146,7 @@ public class MemberController {
 
     // 영상의 문의 목록 출력
     @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<List<Inquiry>> printPurchaseInquiry(@PathVariable long videoSeq, @RequestHeader("Authorization")String token){
+    public ResponseEntity<List<Inquiry>> printPurchaseInquiry(@PathVariable long videoSeq, @RequestHeader("Authorization") String token) {
         List<Inquiry> inquiryList = inquiryRepository.findByVideoAndMember(videoRepository.findByVideoSeq(videoSeq).get(),
                 memberService.findMemberByToken(token));
         List<Inquiry> listForAdd = inquiryRepository.findByVideoAndInquiryIsSecret(videoRepository.findByVideoSeq(videoSeq).get(), true);
@@ -144,8 +158,8 @@ public class MemberController {
 
     // 문의 등록
     @PostMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<String> createPurchaseInquiry(@PathVariable long videoSeq,@RequestBody InquiryFormDto dto, @RequestHeader("Authorization")String token){
-        try{
+    public ResponseEntity<String> createPurchaseInquiry(@PathVariable long videoSeq, @RequestBody InquiryFormDto dto, @RequestHeader("Authorization") String token) {
+        try {
             inquiryService.saveInquiry(dto, memberService.findMemberByToken(token), videoSeq);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
@@ -157,7 +171,7 @@ public class MemberController {
 
     // 문의 수정
     @PutMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<String> updatePurchaseInquiry(@PathVariable long videoSeq, InquiryFormDto inquiryFormDto){
+    public ResponseEntity<String> updatePurchaseInquiry(@PathVariable long videoSeq, InquiryFormDto inquiryFormDto) {
         try {
             Inquiry inquiry = inquiryService.findModifyInquiry(videoSeq);
             Inquiry.modifyInquiry(inquiryFormDto, inquiry);
@@ -182,11 +196,8 @@ public class MemberController {
     }
 
 
-
-
-
     // 문의 답변 목록 출력
-    @GetMapping (value = "/users/lectures/{lectureSeq}/{videoSeq}/{inquirySeq}")
+    @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}/{inquirySeq}")
     public ResponseEntity<List<InquiryAnswer>> printInquiryAnswer(@PathVariable long inquirySeq) {
 
         List<InquiryAnswer> inquiryAnswerList = inquiryAnswerRepository.findByInquiry(inquiryRepository.findByInquirySeq(inquirySeq));
@@ -195,7 +206,7 @@ public class MemberController {
 
     // 강의 평가 출력
     @GetMapping(value = "/users/lectures/review/{lectureSeq}")
-    public ResponseEntity<List<LecturesReview>> printLectureReview(@PathVariable long lectureSeq){
+    public ResponseEntity<List<LecturesReview>> printLectureReview(@PathVariable long lectureSeq) {
         List<LecturesReview> lecturesReviews = lectureReviewRepository.findByLectures(lecturesRepository.findBylectureSeq(lectureSeq).get());
         return ResponseEntity.ok(lecturesReviews);
     }
@@ -204,7 +215,7 @@ public class MemberController {
     // 강의 평가 등록
     @PostMapping(value = "/users/lectures/review/{lectureSeq}")
     public ResponseEntity<String> createLectureReview(LectureReviewFormDto lectureReviewFormDto, @PathVariable long lectureSeq,
-                                                      @RequestHeader("Authorization")String token){
+                                                      @RequestHeader("Authorization") String token) {
         try {
             LecturesReview lecturesReview = LecturesReview.createLectureReview(lectureReviewFormDto,
                     lecturesRepository.findBylectureSeq(lectureSeq).get(), memberService.findMemberByToken(token));
@@ -219,7 +230,7 @@ public class MemberController {
 
     // 강의 평가 수정
     @PutMapping(value = "/users/lectures/review/{lectureSeq}/{revSeq}")
-    public ResponseEntity<String> updateLectureReview(LectureReviewFormDto lectureReviewFormDto,@PathVariable long lectureSeq, @PathVariable long revSeq){
+    public ResponseEntity<String> updateLectureReview(LectureReviewFormDto lectureReviewFormDto, @PathVariable long lectureSeq, @PathVariable long revSeq) {
         try {
             LecturesReview lecturesReview = LecturesReview.modifyLectureReview(lectureReviewFormDto, revSeq);
             lectureReviewRepository.save(lecturesReview);
@@ -233,7 +244,7 @@ public class MemberController {
 
     // 강의 평가 삭제
     @DeleteMapping(value = "/users/lectures/review/{lectureSeq}/{revSeq}")
-    public ResponseEntity<String> deleteLectureReview(@PathVariable long lectureSeq, @PathVariable long revSeq){
+    public ResponseEntity<String> deleteLectureReview(@PathVariable long lectureSeq, @PathVariable long revSeq) {
         try {
             LecturesReview lecturesReview = lectureReviewRepository.findByRevSeq(revSeq);
             lectureReviewRepository.delete((lecturesReview));
@@ -245,21 +256,15 @@ public class MemberController {
     }
 
 
-
-
-
     // 구매 목록 출력
     @GetMapping(value = "/users/order")
-    public ResponseEntity<List<Lectures>> printPurchaseList(@RequestHeader("Authorization")String token){
+    public ResponseEntity<List<Lectures>> printPurchaseList(@RequestHeader("Authorization") String token) {
         List<Lectures> lecturesList = new ArrayList<>();
         List<PurchaseList> purchaseLists = purchaseListRepository.findByMember(memberService.findMemberByToken(token));
-        for (PurchaseList p: purchaseLists)
+        for (PurchaseList p : purchaseLists)
             lecturesList.add(p.getLectures());
         return ResponseEntity.ok(lecturesList);
     }
-
-
-
 
 
     // 장바구니에 담을 강의 선택을 위한 전체 강의 출력
@@ -280,16 +285,16 @@ public class MemberController {
 
         List<Lectures> tmp = lecturesRepository.findAll();
         List<Lectures> lecturesList = null;
-        for (Lectures l: tmp)
-         if (l.getLecturesType() == selectLecturesType)
-             lecturesList.add(l);
+        for (Lectures l : tmp)
+            if (l.getLecturesType() == selectLecturesType)
+                lecturesList.add(l);
         return ResponseEntity.ok(lecturesList);
     }
 
 
     // 장바구니에 강의 담기
     @PostMapping(value = "/users/shoplist/{lectureSeq}")
-    public ResponseEntity<String> createShopping(@PathVariable long lectureSeq, @RequestHeader("Authorization")String token) {
+    public ResponseEntity<String> createShopping(@PathVariable long lectureSeq, @RequestHeader("Authorization") String token) {
         try {
             Member member = memberService.findMemberByToken(token);
 //            shoppingService.saveShopping(lectureSeq, member);
@@ -304,7 +309,7 @@ public class MemberController {
 
     // 장바구니에서 강의 삭제
     @DeleteMapping(value = "/users/shoplist/{lectureSeq}")
-    public ResponseEntity<String> deleteShopping(@PathVariable long lectureSeq, @RequestHeader("Authorization")String token) {
+    public ResponseEntity<String> deleteShopping(@PathVariable long lectureSeq, @RequestHeader("Authorization") String token) {
         try {
             ShoppingList shoppingList = shoppingService.findDeleteShoppinglist(lectureSeq, memberService.findMemberByToken(token));
             shoppingListRepository.delete(shoppingList);
@@ -316,10 +321,10 @@ public class MemberController {
 
     // 장바구니 목록 출력
     @GetMapping(value = "/users/shoplist/list")
-    public ResponseEntity<List<Lectures>> printShoppingList(@RequestHeader("Authorization")String token){
+    public ResponseEntity<List<Lectures>> printShoppingList(@RequestHeader("Authorization") String token) {
         List<Lectures> lecturesList = null;
         List<ShoppingList> shoppingLists = shoppingListRepository.findAll();
-        for (ShoppingList s: shoppingLists)
+        for (ShoppingList s : shoppingLists)
             lecturesList.add(s.getLectures());
 
         return ResponseEntity.ok(lecturesList);
@@ -327,7 +332,7 @@ public class MemberController {
 
     // 장바구니 목록 결제
     @GetMapping(value = "/users/shoplist/order")
-    public ResponseEntity<String> shoppingToOrder(@RequestHeader("Authorization")String token) {
+    public ResponseEntity<String> shoppingToOrder(@RequestHeader("Authorization") String token) {
 
         try {
             List<ShoppingList> shoppingLists = shoppingService.findDeleteShoppinglists(memberService.findMemberByToken(token));
@@ -361,7 +366,7 @@ public class MemberController {
 
 
     @PostMapping("/user/lectures/{videoSeq}/analysis") // (집중도 분석 요청)유저에게 녹화 파일을 받아 서버에 저장, 플라스크 서버로 전송
-    public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization")String token, @PathVariable long videoSeq, @RequestParam("file") MultipartFile file) {
+    public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization") String token, @PathVariable long videoSeq, @RequestParam("file") MultipartFile file) {
         String recording = fileService.saveFile2(file);
         String result = analysisService.sendGetRequest(memberService.findMemberByToken(token).getUserSeq(), videoSeq, recording);
 
@@ -369,7 +374,7 @@ public class MemberController {
     }
 
     @PostMapping("/users/{videoSeq}/chatbot") // 챗봇 질문
-    public ResponseEntity<String> generateChatResponse(@RequestHeader("Authorization")String token, @RequestBody ChatGptRequestDto dto, @PathVariable long videoSeq) {
+    public ResponseEntity<String> generateChatResponse(@RequestHeader("Authorization") String token, @RequestBody ChatGptRequestDto dto, @PathVariable long videoSeq) {
 
         String response = chatGptService.generateChatResponse(dto.getMessages(), videoSeq, memberService.findMemberByToken(token));
 
@@ -378,7 +383,7 @@ public class MemberController {
 
     @PostMapping("/users/lectures/stream/per") //개인 영상 학습 종료, 정보 저장, ai전송
     public ResponseEntity<String> savePersonalStudy(
-            @RequestHeader("Authorization")String token,
+            @RequestHeader("Authorization") String token,
             @RequestBody PersonalVideoRequestDto dto,
             @RequestBody MultipartFile file) {
         dto.setMember(memberService.findMemberByToken(token));

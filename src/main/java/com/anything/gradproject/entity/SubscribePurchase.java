@@ -1,26 +1,41 @@
 package com.anything.gradproject.entity;
 
 import com.anything.gradproject.constant.SubscribeStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
+import com.anything.gradproject.dto.PurchaseDto;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
-public class SubscribePurchase extends BaseEntity{
+@Entity
+@Getter
+@NoArgsConstructor
+@Table(name = "tb_subscribe_purchase")
+public class SubscribePurchase{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long subscribeSeq; // 구독권 결제번호
-
-    @Column
-    private Date subscribeEndDate; // 만료일자
-
-    @Column
-    private String subscribePur; // 구매방법
-
-    @Column
-    private int subscribePrice; //가격
-
-    @Column
+    private LocalDateTime subscribeEndDate; // 만료일자
+    private Integer subscribePrice; //가격
+    @Enumerated(EnumType.STRING)
     private SubscribeStatus subscribeStatus; // 주문 상태
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_seq")
+    private Member member;
 
+    @Builder
+    public SubscribePurchase(PurchaseDto dto, Member member) {
+        this.member = member;
+        this.subscribePrice = dto.getPrice();
+        this.subscribeEndDate = LocalDateTime.now().plusMonths(1);
+        this.subscribeStatus = SubscribeStatus.BUY;
+    }
+
+    public void setSubscribeStatus(SubscribeStatus subscribeStatus) {
+        this.subscribeStatus = subscribeStatus;
+    }
 }
