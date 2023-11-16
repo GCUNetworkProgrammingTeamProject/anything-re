@@ -25,7 +25,6 @@ public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
     private final VideoRepository videoRepository;
-    private final MemberRepository memberRepository;
     private final InquiryAnswerRepository inquiryAnswerRepository;
 
     public void saveInquiry(InquiryFormDto inquiryFormDto, Member member, Long videoSeq){
@@ -50,19 +49,6 @@ public class InquiryService {
 
     }
 
-
-    public Member findMember(){
-        // 현재 로그인한 계정의 id를 알아내는 과정
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails)principal;
-        String userid = ((UserDetails) principal).getUsername();
-
-        // 알아낸 id를 통해 계정 번호를 알아냄
-        Member member = memberRepository.findById(userid)
-                .orElseThrow(() -> {
-                    return new UsernameNotFoundException("해당 아이디를 찾을 수 없습니다.");});
-        return member;
-    }
 
     public List<InquiryAnswer> answerList(Inquiry inquiry){
         List<InquiryAnswer> inquiryAnswerList = inquiryAnswerRepository.findByInquiry(inquiry);

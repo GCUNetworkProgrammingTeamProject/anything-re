@@ -15,24 +15,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class InquiryFormDto {
 
-    long userSeq;
-
-    long videoSeq;
-
-    long lectureSeq;
-
-    long inquirySeq;
-
     String inquiryTitle;
-
     String inquiryQuestion;
-
-    String inquiryName;
-
     boolean inquiryNotice;
-
     String inquiryIsSecret;
-
     boolean inquiryIsAnswered;
 
 }
