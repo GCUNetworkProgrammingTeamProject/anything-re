@@ -23,8 +23,9 @@ public class ChatbotServiceImpl implements ChatbotService {
 
     @Override
     public List<ChatbotResponseDto> printChatbot(long videoSeq, Member member) {
-        long logSeq = chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videoSeq, member.getUserSeq()).orElseThrow(()-> new IllegalArgumentException("해당 영상을 찾을 수 없습니다.")).getChatbotLogSeq();
-        // System.out.println("logSeq: "+logSeq);
+
+        long logSeq = chatbotLogRepository.findByVideo_VideoSeqAndMember_UserSeq(videoSeq, member.getUserSeq())
+                .orElseThrow(()-> new IllegalArgumentException("챗봇 질문내역이 없습니다.")).getChatbotLogSeq();
         List<ChatbotResponseDto> dtoList = chatbotLogDetailRepository.findByChatbotLog_ChatbotLogSeq(logSeq)
                 .stream()
                 .map(ChatbotResponseDto::entityToDto)

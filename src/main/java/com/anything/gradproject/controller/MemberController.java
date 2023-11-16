@@ -83,8 +83,7 @@ public class MemberController {
     //구독권 결제내역 확인
     @GetMapping("/users/subscribe")
     public ResponseEntity<Object> mySubscribe(
-            @RequestHeader("Authorization") String token
-    ) {
+            @RequestHeader("Authorization") String token) {
         try {
             List<SubPurResponseDto> dtoList = purchaseService.findSubscribe(memberService.findMemberByToken(token));
             return ResponseEntity.status(HttpStatus.OK).body(dtoList);

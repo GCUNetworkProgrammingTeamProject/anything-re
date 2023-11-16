@@ -85,13 +85,16 @@ public class MyPageController {
     }
 
     @GetMapping("/chatbot/{videoSeq}") // 챗봇 질문내역 조회(강의)
-    public ResponseEntity<List<ChatbotResponseDto>> getLecChatbot(
+    public ResponseEntity<Object> getLecChatbot(
             @PathVariable long videoSeq,
             @RequestHeader("Authorization")String token) {
 
-        List<ChatbotResponseDto> dtoList = chatbotService.printChatbot(videoSeq,memberService.findMemberByToken(token));
-
-        return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+        try {
+            List<ChatbotResponseDto> dtoList = chatbotService.printChatbot(videoSeq, memberService.findMemberByToken(token));
+            return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/chatbot/per/{perVideoSeq}") // 챗봇 질문내역 조회(개인)
