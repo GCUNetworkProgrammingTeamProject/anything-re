@@ -13,5 +13,7 @@ public class LectureResponseDto {
     private String imageSrc;
     private boolean paid;
     private String authorName;
+    private String authorImageSrc;
+    private String category;
 
 }

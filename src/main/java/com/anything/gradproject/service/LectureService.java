@@ -24,6 +24,7 @@ public class LectureService {
     private final FileService fileService;
     private final VideoRepository videoRepository;
     private final VideoService videoService;
+    private final TeacherDetailRepository teacherDetailRepository;
 
     public LecturesType setLecturesType(String str){
         LecturesType lecturesType;
@@ -103,6 +104,7 @@ public class LectureService {
         dto.setId(lectures.getLectureSeq());
         dto.setPaid(true);
         dto.setAuthorName(lectures.getMember().getName());
+        dto.setCategory(lectures.getLecturesType().toString());
         return dto;
     }
 
