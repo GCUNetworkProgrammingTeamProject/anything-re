@@ -62,9 +62,15 @@ public class MyPageController {
     }
 
     @GetMapping("/teachers/detail") // 강사 등록 승인 현황 조회
-    public ResponseEntity<TeacherDetailResponseDto> printTeacher(@RequestHeader("Authorization")String token) {
-        TeacherDetailResponseDto dto = teacherDetailService.getMyTeacherDetail(memberService.findMemberByToken(token).getUserSeq());
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
+    public ResponseEntity<?> printTeacher(@RequestHeader("Authorization")String token) {
+        try {
+            TeacherDetailResponseDto dto = teacherDetailService.getMyTeacherDetail(memberService.findMemberByToken(token).getUserSeq());
+            return ResponseEntity.status(HttpStatus.OK).body(dto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+
     }
 
     // 집중도 분석표 조회

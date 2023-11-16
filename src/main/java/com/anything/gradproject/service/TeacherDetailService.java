@@ -51,7 +51,8 @@ public class TeacherDetailService {
     }
 
     public TeacherDetailResponseDto getMyTeacherDetail(long userSeq) {
-        return TeacherDetailResponseDto.toDto(teacherDetailRepository.findByMember_UserSeq(userSeq).orElseThrow(()-> new EntityNotFoundException("강사정보 등록을 하지 않았습니다.")));
+        TeacherDetail teacherDetail = teacherDetailRepository.findByMember_UserSeq(userSeq).orElseThrow(() -> new EntityNotFoundException("강사정보 등록을 하지 않았습니다."));
+        return TeacherDetailResponseDto.toDto(teacherDetail);
     }
     public List<TeacherDetailResponseDto> getAllTeacherDetail() { // 어드민용
         return teacherDetailRepository.findAll().stream().map(TeacherDetailResponseDto::toDto).collect(Collectors.toList());
