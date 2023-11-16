@@ -83,7 +83,7 @@ public class PurchaseService {
                     .build());
             return "구독권 결제 성공";
         } catch (Exception e) {
-            throw new RuntimeException("결제처리 중 오류가 발생했습니다.");
+            return e.getMessage();
         }
     }
 
