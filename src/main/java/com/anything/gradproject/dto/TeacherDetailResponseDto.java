@@ -5,8 +5,10 @@ import com.anything.gradproject.entity.Member;
 import com.anything.gradproject.entity.TeacherDetail;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 @Data
+@NoArgsConstructor
 public class TeacherDetailResponseDto {
     private long teacherDetailSeq; // 신청번호
     private String teacherIntro; // 강사 소개
@@ -17,25 +19,4 @@ public class TeacherDetailResponseDto {
     private String reason;
     private TeacherStatus teacherStatus;
     private long userSeq; // 회원번호
-
-    public static TeacherDetailResponseDto toDto(TeacherDetail teacherDetail) {
-        TeacherDetailResponseDto dto = new TeacherDetailResponseDto();
-        dto.setTeacherName(teacherDetail.getMember().getName());
-        dto.setUserSeq(teacherDetail.getMember().getUserSeq());
-        dto.setTeacherDetailSeq(teacherDetail.getTeacherDetailSeq());
-        dto.setTeacherField(teacherDetail.getTeacherField());
-        dto.setTeacherCareer(teacherDetail.getTeacherCareer());
-        dto.setTeacherImg(teacherDetail.getTeacherImg());
-        dto.setTeacherIntro(teacherDetail.getTeacherIntro());
-        dto.setTeacherStatus(teacherDetail.getMember().getTeacherStatus());
-        if (teacherDetail.getMember().getTeacherStatus() == TeacherStatus.REFUSE) {
-            dto.setReason("거절 사유 : " + teacherDetail.getTeacherDeny().getDenyReason());
-        } else if (teacherDetail.getMember().getTeacherStatus() == TeacherStatus.APPROVE) {
-            dto.setReason("강사 신청이 승인 되었습니다.");
-        } else {
-            dto.setReason("승인 대기중 입니다.");
-        }
-
-        return dto;
-    }
 }

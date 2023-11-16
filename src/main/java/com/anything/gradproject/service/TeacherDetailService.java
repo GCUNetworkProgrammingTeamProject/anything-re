@@ -52,9 +52,29 @@ public class TeacherDetailService {
 
     public TeacherDetailResponseDto getMyTeacherDetail(long userSeq) {
         TeacherDetail teacherDetail = teacherDetailRepository.findByMember_UserSeq(userSeq).orElseThrow(() -> new EntityNotFoundException("강사정보 등록을 하지 않았습니다."));
-        return TeacherDetailResponseDto.toDto(teacherDetail);
+        return this.toDto(teacherDetail);
     }
     public List<TeacherDetailResponseDto> getAllTeacherDetail() { // 어드민용
-        return teacherDetailRepository.findAll().stream().map(TeacherDetailResponseDto::toDto).collect(Collectors.toList());
+        return teacherDetailRepository.findAll().stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public TeacherDetailResponseDto toDto(TeacherDetail teacherDetail) {
+        TeacherDetailResponseDto dto = new TeacherDetailResponseDto();
+        dto.setTeacherName(teacherDetail.getMember().getName());
+        dto.setUserSeq(teacherDetail.getMember().getUserSeq());
+        dto.setTeacherDetailSeq(teacherDetail.getTeacherDetailSeq());
+        dto.setTeacherField(teacherDetail.getTeacherField());
+        dto.setTeacherCareer(teacherDetail.getTeacherCareer());
+        dto.setTeacherImg(teacherDetail.getTeacherImg());
+        dto.setTeacherIntro(teacherDetail.getTeacherIntro());
+        dto.setTeacherStatus(teacherDetail.getMember().getTeacherStatus());
+        if (teacherDetail.getMember().getTeacherStatus() == TeacherStatus.REFUSE) {
+            dto.setReason("거절 사유 : " + teacherDetail.getTeacherDeny().getDenyReason());
+        } else if (teacherDetail.getMember().getTeacherStatus() == TeacherStatus.APPROVE) {
+            dto.setReason("강사 신청이 승인 되었습니다.");
+        } else {
+            dto.setReason("승인 대기중 입니다.");
+        }
+        return dto;
     }
 }
