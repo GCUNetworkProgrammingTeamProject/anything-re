@@ -21,6 +21,8 @@ import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.List;
 import java.util.Optional;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 @Service
@@ -164,5 +166,34 @@ public class MemberService {
         Member member = memberRepository.findById(userId).orElseThrow(()->{
             throw new IllegalArgumentException("해당 아이디를 찾을 수 없습니다.");});
         return member;
+    }
+
+public String checkUsers(){
+        String [] command = {"/bin/sh","-c", "netstat -nap | grep :60009 | grep ESTABLISHED | wc -l"};
+        String result = "";
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command(command);
+        try {
+            // Run script
+            Process process = processBuilder.start();
+
+            // Read output
+            StringBuilder output = new StringBuilder();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line);
+            }
+            if(output.toString().equals("")) {
+                result = "success";
+            }else {
+                result = output.toString();
+            }
+        } catch (Exception e) {
+            result = "fail";
+        }
+        return result;
     }
 }

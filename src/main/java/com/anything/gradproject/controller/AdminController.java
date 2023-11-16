@@ -191,6 +191,13 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/admin/checkUsers")
+    public String printUsers() {
+        String result="";
+        result= memberService.checkUsers();
+        return result;
+    }
 }
 
 
