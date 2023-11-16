@@ -1,13 +1,14 @@
 package com.anything.gradproject.dto;
 
 import com.anything.gradproject.entity.Inquiry;
-import com.anything.gradproject.entity.InquiryAnswer;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class InquiryResponseDto {
@@ -19,6 +20,7 @@ public class InquiryResponseDto {
     private boolean inquiryIsAnswered; // 답변 유무
     private String questioner; // 질문자
     private String date; // 문의 일자
+    private List<AnswerDto> answerList;
     private List<String> respondentList; // 답변자
     private List<String> inquiryAnswerList; // 질문에 대한 답변
 
@@ -30,20 +32,15 @@ public class InquiryResponseDto {
         this.inquiryQuestion = inquiry.getInquiryQuestion();
         this.inquiryNotice = inquiry.isInquiryNotice();
         this.questioner = inquiry.getMember().getName();
-        this.date = inquiry.getCreatedBy();
-
-        List<String> answerList = new ArrayList<>();
-        List<String> resList = new ArrayList<>();
-
-        if (inquiry.getInquiryAnswerList() != null && !inquiry.getInquiryAnswerList().isEmpty()) {
-            inquiry.getInquiryAnswerList().forEach(answer -> {
-                answerList.add(answer.getInquiryAnswer());
-                resList.add(answer.getMember().getName());
-            });
-        }
-
-        this.inquiryAnswerList = answerList;
-        this.respondentList = resList;
+        this.date = inquiry.getRegTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
+        this.answerList = inquiry.getInquiryAnswerList()
+                .stream()
+                .map(
+                        (inquiryAnswer) -> AnswerDto
+                                .builder()
+                                .inquiryAnswer(inquiryAnswer)
+                                .build())
+                .collect(Collectors.toList());
     }
 
 
