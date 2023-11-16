@@ -144,15 +144,11 @@ public class MemberController {
     }
 
 
-    // 영상의 문의 목록 출력
+    // 영상의 문의,답변 목록 출력
     @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<List<Inquiry>> printPurchaseInquiry(@PathVariable long lectureSeq, @PathVariable long videoSeq, @RequestHeader("Authorization") String token) {
-        List<Inquiry> inquiryList = inquiryRepository.findByVideoAndMember(videoRepository.findByVideoSeq(videoSeq).get(),
-                memberService.findMemberByToken(token));
-        List<Inquiry> listForAdd = inquiryRepository.findByVideoAndInquiryIsSecret(videoRepository.findByVideoSeq(videoSeq).get(), true);
-        inquiryList.addAll(listForAdd);
-
-        return ResponseEntity.ok(inquiryList);
+    public ResponseEntity<List<InquiryResponseDto>> printPurchaseInquiry(@PathVariable long lectureSeq, @PathVariable long videoSeq, @RequestHeader("Authorization") String token) {
+        List<InquiryResponseDto> dtoList = inquiryService.findAllQuery(videoSeq);
+        return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
 
 

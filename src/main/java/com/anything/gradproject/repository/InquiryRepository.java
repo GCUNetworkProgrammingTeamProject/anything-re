@@ -18,4 +18,6 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     List<Inquiry> findByVideoAndInquiryIsSecret(Video video, boolean secret);
 
     Inquiry findByInquirySeq(Long inquirySeq);
+
+    List<Inquiry> findByVideo_VideoSeq(long videoSeq);
 }

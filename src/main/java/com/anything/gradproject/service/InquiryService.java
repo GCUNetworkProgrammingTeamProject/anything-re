@@ -1,21 +1,15 @@
 package com.anything.gradproject.service;
 
 import com.anything.gradproject.dto.InquiryFormDto;
-import com.anything.gradproject.dto.VideoFormDto;
+import com.anything.gradproject.dto.InquiryResponseDto;
 import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-import static java.util.Objects.isNull;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,4 +49,16 @@ public class InquiryService {
         return inquiryAnswerList;
     }
 
+
+    public List<InquiryResponseDto> findAllQuery(long videoSeq) {
+        List<Inquiry> queryList = inquiryRepository.findByVideo_VideoSeq(videoSeq);
+        return queryList.stream().map(this::queryToDto).collect(Collectors.toList());
+    }
+
+    public InquiryResponseDto queryToDto(Inquiry inquiry) {
+        return InquiryResponseDto
+                .builder()
+                .inquiry(inquiry)
+                .build();
+    }
 }

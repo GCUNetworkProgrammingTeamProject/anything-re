@@ -13,4 +13,6 @@ public interface InquiryAnswerRepository extends JpaRepository<InquiryAnswer, Lo
     List<InquiryAnswer> findByInquiry(Inquiry inquiry);
 
     InquiryAnswer findByInquiryAnswerSeq(Long inquiryAnswerSeq);
+
+    List<InquiryAnswer> findByInquiry_InquirySeq(long inQuerySeq);
 }
