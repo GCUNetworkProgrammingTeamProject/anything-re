@@ -99,7 +99,7 @@ public class MyPageController {
     }
 
 
-    @GetMapping("/getVideoSeq")
+    @GetMapping("/getVideoSeq") // 결제내역 조회
     public ResponseEntity<List<Long>> getVideoSeq(
             @RequestHeader(value = ("Authorization"), required = false) String token) {
 

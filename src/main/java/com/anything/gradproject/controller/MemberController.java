@@ -108,7 +108,7 @@ public class MemberController {
     // 구매한 강의의 영상 목록 출력
     @GetMapping(value = "/users/lectures/{lectureSeq}")
     public ResponseEntity<List<Video>> printPurchaseVideo(@PathVariable long lectureSeq) {
-        List<Video> videoList = purchaseService.findVideoByLectures(lecturesRepository.findBylectureSeq(lectureSeq).get());
+        List<Video> videoList = purchaseService.findVideoByLectures(lectureSeq);
 
         return ResponseEntity.ok(videoList);
     }

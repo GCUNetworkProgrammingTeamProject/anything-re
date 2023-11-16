@@ -23,6 +23,7 @@ public class PurchaseService {
     private final PurchaseListRepository purchaseListRepository;
     private final MemberRepository memberRepository;
     private final VideoRepository videoRepository;
+    private final LecturesRepository lecturesRepository;
 
     public PurchaseList savePurchaseList(PurchaseList purchaseList) {
         return purchaseListRepository.save(purchaseList);
@@ -39,8 +40,8 @@ public class PurchaseService {
         return lecturesList;
     }
 
-    public List<Video> findVideoByLectures(Lectures lectures) {
-        List<Video> videoList = videoRepository.findByLectures(lectures);
+    public List<Video> findVideoByLectures(long lectureSeq) {
+        List<Video> videoList = videoRepository.findByLectures_LectureSeq(lectureSeq);
         return videoList;
     }
 

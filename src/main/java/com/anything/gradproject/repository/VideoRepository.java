@@ -10,8 +10,9 @@ import java.util.Optional;
 public interface VideoRepository extends JpaRepository<Video, Long> {
     Optional<Video> findByVideoSeqAndLectures(long videoSeq, Lectures lecture);
     List<Video> findByLectures(Lectures lecture);
-    Optional<Video> findByVideoSeq(long videoSeq);
 
     List<Video> findByLectures_LectureSeq(long lectureSeq);
+    Optional<Video> findByVideoSeq(long videoSeq);
+
 
 }
