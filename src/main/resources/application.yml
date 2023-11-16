@@ -1,6 +1,11 @@
 #\uD3EC\uD2B8 \uC124\uC815
 Server:
     port: 6009
+    servlet:
+        encoding:
+            charset: UTF-8
+            enabled: true
+            force: true
 jwt:
     secret: asajksdfkjawkejb@nlkajsdl&*$&@G@KJHBFOASGKJHGBHJCD*&CT#SKJHBLSD*FYdkljfasdn@kjbasdfklxuerb
 #저장 경로
@@ -11,6 +16,7 @@ external:
         url: http://ceprj.gachon.ac.kr:7009/concentrate
 openai:
     api-key: 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
+
 
 spring:
     servlet:
