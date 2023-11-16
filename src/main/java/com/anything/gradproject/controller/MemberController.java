@@ -233,7 +233,7 @@ public class MemberController {
 
     // 강의 평가 등록
     @PostMapping(value = "/users/lectures/review/{lectureSeq}")
-    public ResponseEntity<String> createLectureReview(LectureReviewFormDto lectureReviewFormDto, @PathVariable long lectureSeq,
+    public ResponseEntity<String> createLectureReview(@RequestBody LectureReviewFormDto lectureReviewFormDto, @PathVariable long lectureSeq,
                                                       @RequestHeader("Authorization") String token) {
         try {
             LecturesReview lecturesReview = LecturesReview.createLectureReview(lectureReviewFormDto,
