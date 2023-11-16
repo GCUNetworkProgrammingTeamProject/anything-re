@@ -28,11 +28,10 @@ public class InquiryService {
     private final MemberRepository memberRepository;
     private final InquiryAnswerRepository inquiryAnswerRepository;
 
-    public Inquiry saveInquiry(InquiryFormDto inquiryFormDto, Long videoSeq){
-        Member member = findMember();
-        Video video = videoRepository.findByVideoSeq(videoSeq).get();
+    public void saveInquiry(InquiryFormDto inquiryFormDto, Member member, Long videoSeq){
+        Video video = videoRepository.findByVideoSeq(videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 영상을 찾을 수 없습니다."));
         Inquiry inquiry = Inquiry.createInquiry(inquiryFormDto, member, video);
-        return inquiryRepository.save((inquiry));
+        inquiryRepository.save((inquiry));
     }
 
     public Inquiry findModifyInquiry(Long inquirySeq){

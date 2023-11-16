@@ -69,11 +69,10 @@ public class Inquiry extends BaseEntity{
 
         if(inquiryFormDto.getInquiryIsSecret().equals("true"))
             inquiry.setInquiryIsSecret(true);
-        else
+        else {
             inquiry.setInquiryIsSecret(false);
-
+        }
         inquiry.setInquiryIsAnswered(false);
-        inquiry.inquiryAnswerList = new ArrayList<>();
 
         return inquiry;
     }

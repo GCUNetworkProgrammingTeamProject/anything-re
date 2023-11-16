@@ -144,16 +144,12 @@ public class MemberController {
 
     // 문의 등록
     @PostMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<String> createPurchaseInquiry(@PathVariable long videoSeq, InquiryFormDto inquiryFormDto, @RequestHeader("Authorization")String token){
-
+    public ResponseEntity<String> createPurchaseInquiry(@PathVariable long videoSeq, InquiryFormDto dto, @RequestHeader("Authorization")String token){
         try{
-            Inquiry inquiry = Inquiry.createInquiry(inquiryFormDto, memberService.findMemberByToken(token), videoRepository.findByVideoSeq(videoSeq).get());
-            // DB 저장
-            inquiryRepository.save(inquiry);
+            inquiryService.saveInquiry(dto, memberService.findMemberByToken(token), videoSeq);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
-
         return ResponseEntity.status(HttpStatus.CREATED).body("문의 등록 완료");
 
     }
