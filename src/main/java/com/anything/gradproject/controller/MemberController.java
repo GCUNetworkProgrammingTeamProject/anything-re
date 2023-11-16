@@ -144,7 +144,7 @@ public class MemberController {
 
     // 문의 등록
     @PostMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<String> createPurchaseInquiry(@PathVariable long videoSeq, InquiryFormDto dto, @RequestHeader("Authorization")String token){
+    public ResponseEntity<String> createPurchaseInquiry(@PathVariable long videoSeq,@RequestBody InquiryFormDto dto, @RequestHeader("Authorization")String token){
         try{
             inquiryService.saveInquiry(dto, memberService.findMemberByToken(token), videoSeq);
         } catch (IllegalStateException e) {
