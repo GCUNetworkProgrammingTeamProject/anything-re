@@ -88,14 +88,19 @@ public class VideoService {
     }
 
     public VideoResponseDto entityToDto(Video video) {
-        VideoResponseDto dto = new VideoResponseDto();
-        dto.setDuration(video.getVideoLength());
-        dto.setVideoSrc(video.getVideoContent());
-        dto.setVideoName(video.getVideoName());
-        dto.setId(video.getVideoSeq());
-        dto.setIndex(video.getVideoIndex());
-        dto.setVideoLectureData(video.getVideoLectureData());
-        return dto;
+        try {
+            VideoResponseDto dto = new VideoResponseDto();
+            dto.setDuration(video.getVideoLength());
+            dto.setVideoSrc(video.getVideoContent());
+            dto.setVideoName(video.getVideoName());
+            dto.setId(video.getVideoSeq());
+            dto.setIndex(video.getVideoIndex());
+            dto.setVideoLectureData(video.getVideoLectureData());
+            return dto;
+        } catch (Exception e) {
+            throw new RuntimeException("dto 변환 중 오류 발생");
+        }
+
     }
 
     public void saveVideo(Lectures lectures, LecturesFormDto dto) {
