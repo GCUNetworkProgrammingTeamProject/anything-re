@@ -31,12 +31,13 @@ public class AnalysisServiceImpl implements AnalysisService{
 
     private final VideoAnalysisDetailRepository videoAnalysisDetailRepository;
     private final VideoAnalysisRepository videoAnalysisRepository;
-    private final WebClient webClient;
+
     private final MemberRepository memberRepository;
     private final VideoRepository videoRepository;
 
     @Value("${external.api.url}")
     private String url;
+    WebClient webClient = WebClient.create("url");
 
 
     public List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member) {
@@ -99,11 +100,11 @@ public class AnalysisServiceImpl implements AnalysisService{
         VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq)
                 .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
 
-        String fullUrl = url + "/concentrate";
+
 
         webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(url + "/concentrate") // URL의 기본 경로를 포함하여 경로 설정
+                        .path("/concentrate") // URL의 기본 경로를 포함하여 경로 설정
                         .queryParam("url", recording) // 쿼리 파라미터 추가
                         .build())
                 .retrieve()
