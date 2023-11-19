@@ -10,6 +10,7 @@ import com.anything.gradproject.repository.MemberRepository;
 import com.anything.gradproject.repository.VideoAnalysisDetailRepository;
 import com.anything.gradproject.repository.VideoAnalysisRepository;
 import com.anything.gradproject.repository.VideoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -48,6 +49,7 @@ public class AnalysisServiceImpl implements AnalysisService{
     }
 
     @Override
+    @Transactional
     public String sendGetRequest(long userSeq, long videoSeq, String recording) {
         Member member = memberRepository.findByUserSeq(userSeq).orElseThrow(()->new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
         Video video = videoRepository.findByVideoSeq(videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
@@ -78,8 +80,6 @@ public class AnalysisServiceImpl implements AnalysisService{
         } catch (Exception e) {
             return e.getMessage();
         }
-
-
 
     }
 
