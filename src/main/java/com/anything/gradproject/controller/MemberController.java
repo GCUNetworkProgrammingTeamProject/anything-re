@@ -373,10 +373,13 @@ public class MemberController {
 
     @PostMapping("/user/lectures/{videoSeq}/analysis") // (집중도 분석 요청)유저에게 녹화 파일을 받아 서버에 저장, 플라스크 서버로 전송
     public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization") String token, @PathVariable long videoSeq, @RequestParam("file") MultipartFile file) {
-        String recording = fileService.saveFile2(file);
-        String result = analysisService.sendGetRequest(memberService.findMemberByToken(token).getUserSeq(), videoSeq, recording);
-
-        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(result));
+        try {
+            String recording = fileService.saveFile2(file);
+            String result = analysisService.sendGetRequest(memberService.findMemberByToken(token).getUserSeq(), videoSeq, recording);
+            return Mono.just(ResponseEntity.status(HttpStatus.OK).body(result));
+        } catch (Exception e) {
+            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
+        }
     }
 
     @PostMapping("/users/{videoSeq}/chatbot") // 챗봇 질문

@@ -49,21 +49,17 @@ public class AnalysisServiceImpl implements AnalysisService{
 
     @Override
     public String sendGetRequest(long userSeq, long videoSeq, String recording) {
-        String result;
         Member member = memberRepository.findByUserSeq(userSeq).orElseThrow(()->new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
         Video video = videoRepository.findByVideoSeq(videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
 
         try {
+            String result;
             if (videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isEmpty()) {
                 VideoAnalysis va = new VideoAnalysis(video, member);
                 videoAnalysisRepository.save(va);
             }
             VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).orElseThrow(()->new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
 
-            AnalysisRequestDto dto = new AnalysisRequestDto();
-            dto.setUserSeq(userSeq);
-            dto.setRecording(recording);
-            dto.setVideoSeq(videoSeq);
             Mono<Map<Integer, Float>> responseDataMono = webClient
                     .get()
                     .uri(uriBuilder -> uriBuilder.path(url).queryParam("url", recording).build())
@@ -78,12 +74,13 @@ public class AnalysisServiceImpl implements AnalysisService{
                 }
             });
             result = "집중도 저장이 완료되었습니다.";
+            return result;
         } catch (Exception e) {
-            result = e.getMessage();
+            return e.getMessage();
         }
 
 
-        return result;
+
     }
 
 }
