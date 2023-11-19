@@ -167,9 +167,8 @@ public class MemberController {
 
 
     // 문의 등록
-    @PostMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
+    @PostMapping(value = "/users/lectures/qna/{videoSeq}")
     public ResponseEntity<String> createPurchaseInquiry(
-            @PathVariable long lectureSeq,
             @PathVariable long videoSeq,
             @RequestBody InquiryFormDto dto,
             @RequestHeader("Authorization") String token) {
@@ -184,9 +183,8 @@ public class MemberController {
 
 
     // 문의 수정
-    @PatchMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
+    @PatchMapping(value = "/users/lectures/qna/{videoSeq}")
     public ResponseEntity<String> updatePurchaseInquiry(
-            @PathVariable long lectureSeq,
             @PathVariable long videoSeq,
             InquiryFormDto dto) {
         try {
@@ -199,7 +197,7 @@ public class MemberController {
     }
 
     // 문의 삭제
-    @DeleteMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}/{inquirySeq}")
+    @DeleteMapping(value = "/users/lectures/qna/d/{inquirySeq}")
     public ResponseEntity<String> deletePurchaseInquiry(@PathVariable long inquirySeq) {
         try {
             Inquiry inquiry = inquiryService.findDeleteInquiry(inquirySeq);
@@ -212,7 +210,7 @@ public class MemberController {
 
 
     // 문의 답변 목록 출력
-    @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}/{inquirySeq}")
+    @GetMapping(value = "/users/lectures/qna/answers/{inquirySeq}")
     public ResponseEntity<List<InquiryAnswer>> printInquiryAnswer(@PathVariable long inquirySeq) {
 
         List<InquiryAnswer> inquiryAnswerList = inquiryAnswerRepository.findByInquiry(inquiryRepository.findByInquirySeq(inquirySeq).orElseThrow(()->new IllegalArgumentException("찾을수없음")));
