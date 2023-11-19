@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -97,8 +99,13 @@ public class AnalysisServiceImpl implements AnalysisService{
         VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq)
                 .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
 
+        String fullUrl = url + "/concentrate";
+
         webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(url).queryParam("url", recording).build())
+                .uri(uriBuilder -> uriBuilder
+                        .path(url + "/concentrate") // URL의 기본 경로를 포함하여 경로 설정
+                        .queryParam("url", recording) // 쿼리 파라미터 추가
+                        .build())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {})
                 .subscribe(responseData -> {

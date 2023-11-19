@@ -17,7 +17,7 @@ file:
         lectureData : /home/t23209/educrat/public/assets/lectureData/
 external:
     api:
-        url: http://ceprj.gachon.ac.kr:7000/concentrate
+        url: http://ceprj.gachon.ac.kr:7000
 openai:
     api-key: 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
 
