@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -24,10 +26,12 @@ public class PerVideoAnalysis {
     private List<PerVideoAnalysisDetail> perVideoAnalysisDetails;
 
     @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "personal_video_seq")
     private PersonalVideo personalVideo; // 개인 영상 번호
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "user_seq")
     private Member member; // fk
 

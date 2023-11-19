@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity @Getter
 @Table(name = "tb_chatbot_log_detail")
@@ -18,6 +20,7 @@ public class ChatbotLogDetail {
     private String answer;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "chatbot_log_seq")
     private ChatbotLog chatbotLog;
 

@@ -26,6 +26,7 @@ public class ChatbotLog {
     private List<ChatbotLogDetail> chatbotLogDetails;
 
     @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "video_seq")
     private Video video; // 영상 번호
 

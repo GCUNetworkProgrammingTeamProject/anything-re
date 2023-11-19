@@ -44,6 +44,7 @@ public class Inquiry extends BaseEntity{
     private boolean inquiryIsAnswered; // 답변 유무
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "user_seq")
     private Member member;
 

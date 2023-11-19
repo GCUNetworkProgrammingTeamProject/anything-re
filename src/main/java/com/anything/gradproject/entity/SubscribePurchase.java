@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -24,6 +26,7 @@ public class SubscribePurchase extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private SubscribeStatus subscribeStatus; // 주문 상태
     @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "user_seq")
     private Member member;
 

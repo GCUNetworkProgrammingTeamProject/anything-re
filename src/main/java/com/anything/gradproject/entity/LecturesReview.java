@@ -6,6 +6,8 @@ import com.anything.gradproject.dto.LectureReviewFormDto;
 import com.anything.gradproject.dto.LecturesFormDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.UUID;
 
@@ -28,10 +30,12 @@ public class LecturesReview extends BaseEntity{
     private int revScore;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "lectureSeq")
     private Lectures lectures;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "userSeq")
     private Member member;
 

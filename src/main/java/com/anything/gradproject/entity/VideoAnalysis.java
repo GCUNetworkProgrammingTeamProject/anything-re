@@ -2,6 +2,8 @@ package com.anything.gradproject.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -21,10 +23,12 @@ public class VideoAnalysis extends BaseEntity{
     private List<VideoAnalysisDetail> videoAnalysisDetails;
 
     @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "video_seq")
     private Video video; // fk
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
     @JoinColumn(name = "user_seq")
     private Member member; // fk
 
