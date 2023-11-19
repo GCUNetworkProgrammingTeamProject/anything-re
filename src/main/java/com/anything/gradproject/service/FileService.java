@@ -122,6 +122,7 @@ public class FileService {
         // 파일 이름 추출, 변경 후 확장자와 함께 저장
         try {
             File saveFile = new File(saveFilePath);
+            System.out.println("집중도 분석 영상 저장 완료.");
             file.transferTo(saveFile);
             return randomName + extension;
         } catch (Exception e) {

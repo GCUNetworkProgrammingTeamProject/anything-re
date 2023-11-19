@@ -371,17 +371,35 @@ public class MemberController {
     }
 
 
-    @PostMapping("/user/lectures/{videoSeq}/analysis") // (집중도 분석 요청)유저에게 녹화 파일을 받아 서버에 저장, 플라스크 서버로 전송
-    public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization") String token, @PathVariable long videoSeq, @RequestParam("file") MultipartFile file) {
+//    @PostMapping("/user/lectures/{videoSeq}/analysis") // (집중도 분석 요청)유저에게 녹화 파일을 받아 서버에 저장, 플라스크 서버로 전송
+//    public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization") String token, @PathVariable long videoSeq, @RequestParam("file") MultipartFile file) {
+//        try {
+//            String recording = fileService.saveFileAnalysis(file);
+//            long userSeq = memberService.findMemberByToken(token).getUserSeq();
+//            String result = analysisService.sendGetRequest(userSeq, videoSeq, recording);
+//            return Mono.just(ResponseEntity.status(HttpStatus.OK).body(result));
+//        } catch (Exception e) {
+//            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
+//        }
+//    }
+
+    @PostMapping("/user/lectures/{videoSeq}/analysis")
+    public Mono<ResponseEntity<String>> sendData(@RequestHeader("Authorization") String token,
+                                                 @PathVariable long videoSeq,
+                                                 @RequestParam("file") MultipartFile file) {
         try {
-            String recording = fileService.saveFileAnalysis(file);
+            String recording = fileService.saveFileAnalysis(file); // 파일 저장
             long userSeq = memberService.findMemberByToken(token).getUserSeq();
-            String result = analysisService.sendGetRequest(userSeq, videoSeq, recording);
-            return Mono.just(ResponseEntity.status(HttpStatus.OK).body(result));
+
+            // 비동기 호출을 위한 별도의 메서드 호출
+            analysisService.sendGetRequestAsync(userSeq, videoSeq, recording);
+
+            return Mono.just(ResponseEntity.status(HttpStatus.OK).body("파일 저장 및 분석 요청이 완료되었습니다."));
         } catch (Exception e) {
             return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
         }
     }
+
 
     @PostMapping("/users/{videoSeq}/chatbot") // 챗봇 질문
     public ResponseEntity<String> generateChatResponse(@RequestHeader("Authorization") String token, @RequestBody ChatGptRequestDto dto, @PathVariable long videoSeq) {

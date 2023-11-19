@@ -82,5 +82,30 @@ public class AnalysisServiceImpl implements AnalysisService{
         }
 
     }
+    @Override
+    @Transactional
+    public void sendGetRequestAsync(long userSeq, long videoSeq, String recording) {
+        Member member = memberRepository.findByUserSeq(userSeq)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+        Video video = videoRepository.findByVideoSeq(videoSeq)
+                .orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
 
+        if (videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isEmpty()) {
+            VideoAnalysis va = new VideoAnalysis(video, member);
+            videoAnalysisRepository.save(va);
+        }
+        VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq)
+                .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
+
+        webClient.get()
+                .uri(uriBuilder -> uriBuilder.path(url).queryParam("url", recording).build())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {})
+                .subscribe(responseData -> {
+                    responseData.forEach((key, value) -> {
+                        VideoAnalysisDetail vad = new VideoAnalysisDetail(key, value, videoAnalysis);
+                        videoAnalysisDetailRepository.save(vad);
+                    });
+                });
+    }
 }
