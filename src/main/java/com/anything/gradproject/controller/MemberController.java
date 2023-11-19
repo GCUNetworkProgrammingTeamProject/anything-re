@@ -162,8 +162,7 @@ public class MemberController {
     @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
     public ResponseEntity<List<InquiryResponseDto>> printPurchaseInquiry(
             @PathVariable long lectureSeq,
-            @PathVariable long videoSeq,
-            @RequestHeader("Authorization") String token) {
+            @PathVariable long videoSeq) {
         List<InquiryResponseDto> dtoList = inquiryService.findAllQuery(videoSeq);
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
