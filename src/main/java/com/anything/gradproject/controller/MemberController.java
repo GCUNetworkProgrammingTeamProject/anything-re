@@ -160,9 +160,14 @@ public class MemberController {
 
     // 영상의 문의,답변 목록 출력
     @GetMapping(value = "/users/lectures/qna/{videoSeq}")
-    public ResponseEntity<List<InquiryResponseDto>> printPurchaseInquiry(@PathVariable long videoSeq) {
-        List<InquiryResponseDto> dtoList = inquiryService.findAllQuery(videoSeq);
-        return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+    public ResponseEntity<?> printPurchaseInquiry(@PathVariable long videoSeq) {
+        try {
+            List<InquiryResponseDto> dtoList = inquiryService.findAllQuery(videoSeq);
+            return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 
 
