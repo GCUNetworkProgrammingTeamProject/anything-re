@@ -400,7 +400,7 @@ public class MemberController {
         } catch (IllegalArgumentException e) {
             return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
         } catch (Exception e) {
-            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ㄸㄱ객 : " + e.getMessage() + "\nStack Trace : " + Arrays.toString(e.getStackTrace())));
+            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error : " + e.getMessage() + "\nStack Trace : " + Arrays.toString(e.getStackTrace())));
         }
     }
 

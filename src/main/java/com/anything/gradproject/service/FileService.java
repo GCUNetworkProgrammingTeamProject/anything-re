@@ -116,6 +116,7 @@ public class FileService {
         }
         String randomName = UUID.randomUUID().toString();
         String originName = file.getOriginalFilename();
+        System.out.println(originName);
         String extension = originName.substring(originName.lastIndexOf(".")).toLowerCase();
         String fileDir = analysisDir;
         String saveFilePath = fileDir + randomName + extension;
