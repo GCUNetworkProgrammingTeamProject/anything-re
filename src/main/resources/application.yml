@@ -11,10 +11,10 @@ jwt:
 #저장 경로
 file:
     dir:
-        analysisVideo : /home/t23209/educrat/public/assets/analysisVideo
-        img : /home/t23209/educrat/public/assets/img/courses
-        video : /home/t23209/educrat/public/assets/video
-        lectureData : /home/t23209/educrat/public/assets/lectureData
+        analysisVideo : /home/t23209/educrat/public/assets/analysisVideo/
+        img : /home/t23209/educrat/public/assets/img/courses/
+        video : /home/t23209/educrat/public/assets/video/
+        lectureData : /home/t23209/educrat/public/assets/lectureData/
 external:
     api:
         url: http://ceprj.gachon.ac.kr:7000/concentrate
