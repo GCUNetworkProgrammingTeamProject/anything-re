@@ -27,9 +27,6 @@ import java.util.List;
 @Service
 public class CommunityPostService {
 
-    @Value("${file.dir}")
-    private String fileDir;
-
     private final CommunityPostRepository communityPostRepository;
     private final CommunityCommentService communityCommentService;
 

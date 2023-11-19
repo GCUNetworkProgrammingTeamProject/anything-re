@@ -10,7 +10,11 @@ jwt:
     secret: asajksdfkjawkejb@nlkajsdl&*$&@G@KJHBFOASGKJHGBHJCD*&CT#SKJHBLSD*FYdkljfasdn@kjbasdfklxuerb
 #저장 경로
 file:
-    dir: /home/t23209/educrat/public/assets/img/courses/
+    dir:
+        analysisVideo : /home/t23209/educrat/public/assets/analysisVideo
+        img : /home/t23209/educrat/public/assets/img/courses
+        video : /home/t23209/educrat/public/assets/video
+        lectureData : /home/t23209/educrat/public/assets/lectureData
 external:
     api:
         url: http://ceprj.gachon.ac.kr:7009/concentrate

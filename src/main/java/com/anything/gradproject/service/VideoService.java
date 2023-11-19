@@ -4,7 +4,6 @@ import com.anything.gradproject.dto.LecturesFormDto;
 import com.anything.gradproject.dto.VideoFormDto;
 import com.anything.gradproject.dto.VideoResponseDto;
 import com.anything.gradproject.entity.Lectures;
-import com.anything.gradproject.entity.Member;
 import com.anything.gradproject.entity.Video;
 import com.anything.gradproject.repository.LecturesRepository;
 import com.anything.gradproject.repository.VideoRepository;
@@ -12,9 +11,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -104,8 +102,8 @@ public class VideoService {
     }
 
     public void saveVideo(Lectures lectures, LecturesFormDto dto) {
-        String saveVideoName = fileService.saveFile2(dto.getVideo());
-        String saveDataName = fileService.saveFile2(dto.getData());
+        String saveVideoName = fileService.saveFileImg(dto.getVideo());
+        String saveDataName = fileService.saveFileImg(dto.getData());
         Video video =new Video(saveVideoName, saveDataName, lectures, dto);
         videoRepository.save(video);
     }
