@@ -395,6 +395,8 @@ public class MemberController {
             analysisService.sendGetRequestAsync(userSeq, videoSeq, recording);
 
             return Mono.just(ResponseEntity.status(HttpStatus.OK).body("파일 저장 및 분석 요청이 완료되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
         } catch (Exception e) {
             return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
         }

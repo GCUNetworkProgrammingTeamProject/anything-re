@@ -112,7 +112,7 @@ public class FileService {
 
     public String saveFileAnalysis(MultipartFile file) {
         if (file.isEmpty()) {
-            return "file이 없습니다.";
+            throw new IllegalArgumentException("업로드 된 파일이 없습니다.");
         }
         String randomName = UUID.randomUUID().toString();
         String originName = file.getOriginalFilename();
