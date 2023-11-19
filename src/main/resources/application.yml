@@ -7,7 +7,7 @@ Server:
             enabled: true
             force: true
 jwt:
-    secret: ceprjgachonackrgradProjectAnythinggogogogo
+    secret: cejkasdjhfShaDFonacgojgogFNkrgngErsdfctAnDeojgachFJradPythiIKDSgprSooasdfNKL
 #저장 경로
 file:
     dir:
