@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,6 +166,7 @@ public class MemberController {
             List<InquiryResponseDto> dtoList = inquiryService.findAllQuery(videoSeq);
             return ResponseEntity.status(HttpStatus.OK).body(dtoList);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
@@ -398,7 +400,7 @@ public class MemberController {
         } catch (IllegalArgumentException e) {
             return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
         } catch (Exception e) {
-            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
+            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ㄸㄱ객 : " + e.getMessage() + "\nStack Trace : " + Arrays.toString(e.getStackTrace())));
         }
     }
 
