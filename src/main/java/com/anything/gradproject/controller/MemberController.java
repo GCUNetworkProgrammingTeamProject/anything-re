@@ -159,10 +159,8 @@ public class MemberController {
 
 
     // 영상의 문의,답변 목록 출력
-    @GetMapping(value = "/users/lectures/{lectureSeq}/{videoSeq}")
-    public ResponseEntity<List<InquiryResponseDto>> printPurchaseInquiry(
-            @PathVariable long lectureSeq,
-            @PathVariable long videoSeq) {
+    @GetMapping(value = "/users/lectures/qna/{videoSeq}")
+    public ResponseEntity<List<InquiryResponseDto>> printPurchaseInquiry(@PathVariable long videoSeq) {
         List<InquiryResponseDto> dtoList = inquiryService.findAllQuery(videoSeq);
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
