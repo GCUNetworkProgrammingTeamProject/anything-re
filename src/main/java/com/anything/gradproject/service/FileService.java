@@ -117,7 +117,7 @@ public class FileService {
         String randomName = UUID.randomUUID().toString();
         String originName = file.getOriginalFilename();
         System.out.println(originName);
-        String extension = ".mp4";
+        String extension = originName.substring(originName.lastIndexOf(".")).toLowerCase();
         String fileDir = analysisDir;
         String saveFilePath = fileDir + randomName + extension;
         // 파일 이름 추출, 변경 후 확장자와 함께 저장
