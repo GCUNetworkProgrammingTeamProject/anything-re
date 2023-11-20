@@ -1,5 +1,6 @@
 package com.anything.gradproject.dto;
 
+import com.anything.gradproject.constant.Role;
 import com.anything.gradproject.entity.Lectures;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +29,15 @@ public class LectureResponseDto {
         this.imageSrc = lectures.getLectureImage();
         this.paid = true;
         this.authorName = lectures.getMember().getName();
-        this.authorImageSrc = lectures.getMember().getTeacherDetail().get(lectures.getMember().getTeacherDetail().size() - 1).getTeacherImg();
+        if (lectures.getMember().getRole().equals(Role.ADMIN)) {
+            this.authorImageSrc = "admin.png";
+        } else {
+            int teacherDetailIndex = lectures.getMember().getTeacherDetail().size();
+            if (teacherDetailIndex == 0) {
+                this.authorImageSrc = "noTeacherDetail.png";
+            }
+            this.authorImageSrc = lectures.getMember().getTeacherDetail().get(teacherDetailIndex - 1).getTeacherImg();
+        }
         this.category = lectures.getLecturesType().toString();
     }
 
