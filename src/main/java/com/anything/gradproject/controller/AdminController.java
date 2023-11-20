@@ -46,10 +46,13 @@ public class AdminController {
     private final PurchaseService purchaseService;
 
     @GetMapping("/admin/order")
-    public ResponseEntity<List<PurchaseList>> printPurchaseList() {
-        AdminPurchaseListDto dto = purchaseService.getPurchaseList();
-        List<PurchaseList> purchaseLists = purchaseListRepository.findAll();
-        return ResponseEntity.ok(purchaseLists);
+    public ResponseEntity<?> printPurchaseList() {
+        try {
+            AdminPurchaseListDto dto = purchaseService.getPurchaseList();
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error : " + e.getMessage() + "\nError Stack Trace : " + e.getStackTrace());
+        }
     }
 
 
