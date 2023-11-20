@@ -4,4 +4,5 @@ import com.anything.gradproject.entity.TeacherDeny;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeacherDenyRepository extends JpaRepository<TeacherDeny, Long> {
+  Optional<TeacherDeny> findByDenySeq(Long denySeq);
 }
