@@ -289,11 +289,15 @@ public class MemberController {
 
     // 장바구니에 담을 강의 선택을 위한 전체 강의 출력
     @GetMapping(value = "/users/shoplist")
-    public ResponseEntity<List<LectureResponseDto>> printShopping() {
-        List<Lectures> lecturesList = lecturesRepository.findAll();
-        List<LectureResponseDto> dtos = lecturesList.stream().map(lectureService::entityToDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(dtos);
+    public ResponseEntity<?> printShopping() {
+        try {
+            List<Lectures> lecturesList = lecturesRepository.findAll();
+            List<LectureResponseDto> dtos = lecturesList.stream().map((lec) -> LectureResponseDto.builder().lectures(lec).build()).toList();
+            return ResponseEntity.status(HttpStatus.OK).body(dtos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 
 
