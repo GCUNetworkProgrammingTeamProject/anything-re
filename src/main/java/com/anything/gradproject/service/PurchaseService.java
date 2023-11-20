@@ -92,10 +92,15 @@ public class PurchaseService {
     }
 
     public AdminPurchaseListDto getPurchaseList() {
-        List<SubscribePurchase> subscribeList = subscribePurchaseRepository.findAll();
-        List<SubPurResponseDto> subDtoList = subscribeList.stream().map((sub)-> SubPurResponseDto.builder().purchase(sub).build()).toList();
-        List<PurchaseList> purchaseLists = purchaseListRepository.findAll();
-        List<LecPurResponseDto> lecPurResponseDtoList = purchaseLists.stream().map((lec) -> LecPurResponseDto.builder().purchaseList(lec).build()).toList();
-        return AdminPurchaseListDto.builder().lecPurResponseDtoList(lecPurResponseDtoList).subPurResponseDtoList(subDtoList).build();
+        try {
+            List<SubscribePurchase> subscribeList = subscribePurchaseRepository.findAll();
+            List<SubPurResponseDto> subDtoList = subscribeList.stream().map((sub) -> SubPurResponseDto.builder().purchase(sub).build()).toList();
+            List<PurchaseList> purchaseLists = purchaseListRepository.findAll();
+            List<LecPurResponseDto> lecPurResponseDtoList = purchaseLists.stream().map((lec) -> LecPurResponseDto.builder().purchaseList(lec).build()).toList();
+            return AdminPurchaseListDto.builder().lecPurResponseDtoList(lecPurResponseDtoList).subPurResponseDtoList(subDtoList).build();
+        } catch (Exception e) {
+            throw new RuntimeException("내역 조회 중 오류");
+        }
+
     }
 }
