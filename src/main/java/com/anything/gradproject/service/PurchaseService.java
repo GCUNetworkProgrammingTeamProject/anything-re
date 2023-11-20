@@ -1,9 +1,7 @@
 package com.anything.gradproject.service;
 
 import com.anything.gradproject.constant.SubscribeStatus;
-import com.anything.gradproject.dto.PurchaseDto;
-import com.anything.gradproject.dto.PurchaseListResponseDto;
-import com.anything.gradproject.dto.SubPurResponseDto;
+import com.anything.gradproject.dto.*;
 import com.anything.gradproject.entity.*;
 import com.anything.gradproject.repository.*;
 import jakarta.transaction.Transactional;
@@ -91,5 +89,13 @@ public class PurchaseService {
     public List<SubPurResponseDto> findSubscribe(Member member) {
         List<SubscribePurchase> purchaseList = subscribePurchaseRepository.findByMember_UserSeq(member.getUserSeq());
         return purchaseList.stream().map((pur) -> SubPurResponseDto.builder().purchase(pur).build()).collect(Collectors.toList());
+    }
+
+    public AdminPurchaseListDto getPurchaseList() {
+        List<SubscribePurchase> subscribeList = subscribePurchaseRepository.findAll();
+        List<SubPurResponseDto> subDtoList = subscribeList.stream().map((sub)-> SubPurResponseDto.builder().purchase(sub).build()).toList();
+        List<PurchaseList> purchaseLists = purchaseListRepository.findAll();
+        List<LecPurResponseDto> lecPurResponseDtoList = purchaseLists.stream().map((lec) -> LecPurResponseDto.builder().purchaseList(lec).build()).toList();
+        return AdminPurchaseListDto.builder().lecPurResponseDtoList(lecPurResponseDtoList).subPurResponseDtoList(subDtoList).build();
     }
 }

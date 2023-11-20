@@ -13,11 +13,8 @@ import com.anything.gradproject.repository.AdvertisementRepository;
 import com.anything.gradproject.repository.LecturesRepository;
 import com.anything.gradproject.repository.MemberRepository;
 import com.anything.gradproject.repository.PurchaseListRepository;
-import com.anything.gradproject.service.FileService;
-import com.anything.gradproject.service.LectureService;
+import com.anything.gradproject.service.*;
 import com.anything.gradproject.service.MemberService;
-import com.anything.gradproject.service.MemberService;
-import com.anything.gradproject.service.TeacherDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,15 +43,14 @@ public class AdminController {
     private final LectureService lectureService;
     private final FileService fileService;
     private final TeacherDetailService teacherDetailService;
-
-
+    private final PurchaseService purchaseService;
 
     @GetMapping("/admin/order")
-    public ResponseEntity<List<PurchaseList>> printPurchaseList(){
+    public ResponseEntity<List<PurchaseList>> printPurchaseList() {
+        AdminPurchaseListDto dto = purchaseService.getPurchaseList();
         List<PurchaseList> purchaseLists = purchaseListRepository.findAll();
         return ResponseEntity.ok(purchaseLists);
     }
-
 
 
     // 광고 리스트 출력
@@ -116,10 +112,10 @@ public class AdminController {
 
     // 메인 배너에 올릴 광고 선택
     @PostMapping("/admin/ad/select")
-    public ResponseEntity<String> selectMainAdvers(@RequestBody Long adverSeq){
+    public ResponseEntity<String> selectMainAdvers(@RequestBody Long adverSeq) {
         try {
             Advertisement advertisements = advertisementRepository.findByadverSeq(adverSeq);
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
         return ResponseEntity.status(HttpStatus.OK).body("강의 변경 완료");
@@ -128,7 +124,7 @@ public class AdminController {
 
     // 강의 목록 출력
     @GetMapping("/admin/lectures")
-    public ResponseEntity<?> printLectures(@RequestHeader("Authorization")String token) {
+    public ResponseEntity<?> printLectures(@RequestHeader("Authorization") String token) {
         try {
             List<Lectures> lecturesList = lectureService.findUserLectureList(memberService.findMemberByToken(token));
             return ResponseEntity.ok(lecturesList);
@@ -139,25 +135,23 @@ public class AdminController {
     }
 
 
-
-
     // 추천 강의 목록 출력
     @GetMapping("/admin/lectures/rec")
-    public ResponseEntity<List<Lectures>> printRecLectures(){
+    public ResponseEntity<List<Lectures>> printRecLectures() {
         List<Lectures> lecturesList = lecturesRepository.findByLectureRecommend(true);
         return ResponseEntity.ok(lecturesList);
     }
 
     // 추천 강의 등록
     @PostMapping("/admin/lectures/rec/{lectureSeq}")
-    public ResponseEntity<String> addRecLectures(@PathVariable long lectureSeq){
+    public ResponseEntity<String> addRecLectures(@PathVariable long lectureSeq) {
         lecturesRepository.findBylectureSeq(lectureSeq).get().setLectureRecommend(true);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 등록 완료");
     }
 
     // 추천 강의 삭제
     @DeleteMapping("/admin/lectures/rec/{lectureSeq}")
-    public ResponseEntity<String> deleteRecLectures(@PathVariable long lectureSeq){
+    public ResponseEntity<String> deleteRecLectures(@PathVariable long lectureSeq) {
         lecturesRepository.findBylectureSeq(lectureSeq).get().setLectureRecommend(false);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 삭제 완료");
     }
@@ -198,10 +192,12 @@ public class AdminController {
 
     @GetMapping("/admin/checkUsers")
     public String printUsers() {
-        String result="";
-        result= memberService.checkUsers();
+        String result = "";
+        result = memberService.checkUsers();
         return result;
     }
+
+
 }
 
 

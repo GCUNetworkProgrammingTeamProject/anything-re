@@ -4,10 +4,12 @@ package com.anything.gradproject.entity;
 import com.anything.gradproject.constant.Role;
 import com.anything.gradproject.constant.TeacherStatus;
 import com.anything.gradproject.dto.MemberFormDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 
 
 @Entity
@@ -36,6 +38,10 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private TeacherStatus teacherStatus; //강사 승인 여부, 일반 유저 초기값 USER , 강사 회원가입시 초기값 WAIT,
+
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<TeacherDetail> teacherDetail;
 
 
     @Builder

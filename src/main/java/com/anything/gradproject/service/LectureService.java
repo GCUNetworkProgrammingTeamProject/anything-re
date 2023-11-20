@@ -96,17 +96,7 @@ public class LectureService {
     }
 
     public LectureResponseDto entityToDto(Lectures lectures) {
-        LectureResponseDto dto = new LectureResponseDto();
-        dto.setDesc(lectures.getLectureContent());
-        dto.setLessonCount(lectures.getLectureIndex());
-        dto.setTitle(lectures.getLectureName());
-        dto.setImageSrc(lectures.getLectureImage());
-        dto.setOriginalPrice(lectures.getLecturePrice());
-        dto.setId(lectures.getLectureSeq());
-        dto.setPaid(true);
-        dto.setAuthorName(lectures.getMember().getName());
-        dto.setCategory(lectures.getLecturesType().toString());
-        return dto;
+        return new LectureResponseDto(lectures);
     }
 
     @Transactional
