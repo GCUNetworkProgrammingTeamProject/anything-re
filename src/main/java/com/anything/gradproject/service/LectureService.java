@@ -68,7 +68,8 @@ public class LectureService {
     }
 
     public List<Lectures> findUserLectureList(Member member) {
-        return lecturesRepository.findByMember_UserSeq(member.getUserSeq());
+        List<Lectures> lecturesList = lecturesRepository.findByMember_UserSeq(member.getUserSeq()).orElseThrow(() -> new IllegalArgumentException("등록한 강의가 없습니다."));
+        return lecturesList;
     }
 
 

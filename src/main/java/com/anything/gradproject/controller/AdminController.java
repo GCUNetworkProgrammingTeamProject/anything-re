@@ -128,10 +128,14 @@ public class AdminController {
 
     // 강의 목록 출력
     @GetMapping("/admin/lectures")
-    public ResponseEntity<List<Lectures>> printLectures(@RequestHeader("Authorization")String token) {
+    public ResponseEntity<?> printLectures(@RequestHeader("Authorization")String token) {
+        try {
+            List<Lectures> lecturesList = lectureService.findUserLectureList(memberService.findMemberByToken(token));
+            return ResponseEntity.ok(lecturesList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
 
-        List<Lectures> lecturesList = lectureService.findUserLectureList(memberService.findMemberByToken(token));
-        return ResponseEntity.ok(lecturesList);
     }
 
 
