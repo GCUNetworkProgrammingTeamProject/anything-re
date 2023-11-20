@@ -49,7 +49,7 @@ public class AdminController {
     public ResponseEntity<?> printPurchaseList() {
         try {
             AdminPurchaseListDto dto = purchaseService.getPurchaseList();
-            return ResponseEntity.ok(dto);
+            return ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error : " + e.getMessage() + "\nError Stack Trace : " + e.getStackTrace());
         }
