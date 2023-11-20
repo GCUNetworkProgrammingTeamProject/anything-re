@@ -10,6 +10,9 @@ import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 @Data
 public class LecPurResponseDto {
 
@@ -17,6 +20,7 @@ public class LecPurResponseDto {
     private long purSeq; // 주문 번호
 
     private String purchaseStatus; // 주문 상태
+    private String purchaseDate;
 
     private MemberResponseDto member;
 
@@ -28,5 +32,6 @@ public class LecPurResponseDto {
         this.purchaseStatus = purchaseList.getPurchaseStatus().toString();
         this.member = MemberResponseDto.builder().member(purchaseList.getMember()).build();
         this.lecture = LectureResponseDto.builder().lectures(purchaseList.getLectures()).build();
+        this.purchaseDate = purchaseList.getRegTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
     }
 }
