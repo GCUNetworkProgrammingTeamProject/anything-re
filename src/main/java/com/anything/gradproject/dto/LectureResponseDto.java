@@ -32,11 +32,11 @@ public class LectureResponseDto {
         if (lectures.getMember().getRole().equals(Role.ADMIN)) {
             this.authorImageSrc = "admin.png";
         } else {
-            int teacherDetailIndex = lectures.getMember().getTeacherDetail().size();
-            if (teacherDetailIndex == 0) {
+            if (lectures.getMember().getTeacherDetail().isEmpty()) {
                 this.authorImageSrc = "noTeacherDetail.png";
+            } else {
+                this.authorImageSrc = lectures.getMember().getTeacherDetail().get(lectures.getMember().getTeacherDetail().size() - 1).getTeacherImg();
             }
-            this.authorImageSrc = lectures.getMember().getTeacherDetail().get(teacherDetailIndex - 1).getTeacherImg();
         }
         this.category = lectures.getLecturesType().toString();
     }
