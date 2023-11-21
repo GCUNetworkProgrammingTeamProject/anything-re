@@ -166,8 +166,6 @@ public class AdminController {
         lecturesRepository.save(lectures);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 삭제 완료");
     }
-
-
     @GetMapping("/admin/Teacher") // 강사등록신청 조회
     public ResponseEntity<List<TeacherDetailResponseDto>> getTeacherDetail() {
 
