@@ -30,6 +30,10 @@ public class LectureResponseDto {
         this.imageSrc = lectures.getLectureImage();
         this.paid = true;
         this.authorName = lectures.getMember().getName();
+        if (lectures.isLectureRecommend())
+            this.lectureRecommend = true;
+        else 
+            this.lectureRecommend = false;
         if (lectures.getMember().getRole().equals(Role.ADMIN)) {
             this.authorImageSrc = "admin.png";
         } else {
