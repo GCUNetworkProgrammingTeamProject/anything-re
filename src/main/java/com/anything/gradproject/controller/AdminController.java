@@ -115,15 +115,22 @@ public class AdminController {
 
     // 메인 배너에 올릴 광고 선택
     @PostMapping("/admin/ad/select")
-    public ResponseEntity<String> selectMainAdvers(@RequestBody Long adverSeq) {
+    public ResponseEntity<String> selectMainAdvers(@RequestBody AdvertiseRequestDto dto) {
         try {
-            Advertisement advertisements = advertisementRepository.findByadverSeq(adverSeq);
+            Advertisement advertisements = advertisementRepository.findByadverSeq(dto.getAdverSeq());
+            if(dto.getIsBanner() == 0){
+                advertisements.setBanner(false);
+            }
+
+            else if (dto.getIsBanner() == 1) {
+                advertisements.setBanner(true);
+            }
+
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
-        return ResponseEntity.status(HttpStatus.OK).body("강의 변경 완료");
+        return ResponseEntity.status(HttpStatus.OK).body("배너 광고 변경 완료");
     }
-
 
     // 강의 목록 출력
     @GetMapping("/admin/lectures")

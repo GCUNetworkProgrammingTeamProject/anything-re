@@ -31,4 +31,7 @@ public class AdvertiseFormDto {
     @NotEmpty(message = "광고 이미지를 입력해 주세요")
     private MultipartFile adverImage;
 
+
+    private boolean isBanner;
+
 }

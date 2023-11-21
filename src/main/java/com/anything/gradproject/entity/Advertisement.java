@@ -34,6 +34,9 @@ public class Advertisement extends BaseEntity{
     @Column
     private String adverImage; // 광고 이미지
 
+    @Column
+    private boolean isBanner; // 배너광고 여부
+
 
 
     public static Advertisement createAdvertisement(AdvertiseFormDto advertiseFormDto) {
@@ -42,6 +45,7 @@ public class Advertisement extends BaseEntity{
 
         String code = UUID.randomUUID().toString();
         advertisement.setAdverName(advertiseFormDto.getAdverName());
+        advertisement.setBanner(false);
         advertisement.setAdverClicker(0);
         advertisement.setAdverUrl(advertiseFormDto.getAdverUrl());
         advertisement.setAdverImage("Advertisement" + code);

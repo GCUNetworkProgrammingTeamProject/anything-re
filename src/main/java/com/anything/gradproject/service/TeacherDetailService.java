@@ -40,20 +40,22 @@ public class TeacherDetailService {
         TeacherDetail teacherDetail = teacherDetailRepository.findById(dto.getTeacherDetailSeq()).orElseThrow(() -> new IllegalArgumentException("not found: " + dto.getTeacherDetailSeq()));
         if (dto.getStatus() == 0) {
             teacherDetail.getMember().setTeacherStatus(TeacherStatus.APPROVE);
-            if (teacherDetail.getTeacherDeny() != null){
+            if (teacherDetail.getTeacherDeny() != null) {
                 teacherDenyRepository.delete(teacherDenyRepository.findByDenySeq(teacherDetail.getTeacherDeny().getDenySeq()).get());
                 teacherDetailRepository.delete(teacherDetail);
             }
-            else if (dto.getStatus() == 1) {
-                teacherDetail.getMember().setTeacherStatus(TeacherStatus.REFUSE);
-                teacherDenyRepository.save(TeacherDeny.builder()
-                        .teacherDetail(teacherDetail)
-                        .denyReason(dto.getReason())
-                        .build());
-                teacherDetailRepository.delete(teacherDetail);
-            }
+        } else if (dto.getStatus() == 1) {
+            teacherDetail.getMember().setTeacherStatus(TeacherStatus.REFUSE);
+            teacherDetailRepository.delete(teacherDetail);
+            teacherDenyRepository.save(TeacherDeny.builder()
+                    .teacherDetail(teacherDetail)
+                    .denyReason(dto.getReason())
+                    .build());
         }
+
     }
+
+
     public TeacherDetailResponseDto getMyTeacherDetail(long userSeq) {
         TeacherDetail teacherDetail = teacherDetailRepository.findByMember_UserSeq(userSeq).orElseThrow(() -> new EntityNotFoundException("강사정보 등록을 하지 않았습니다."));
         return this.toDto(teacherDetail);
