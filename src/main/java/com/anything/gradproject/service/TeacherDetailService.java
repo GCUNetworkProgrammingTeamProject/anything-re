@@ -50,6 +50,7 @@ public class TeacherDetailService {
                         .teacherDetail(teacherDetail)
                         .denyReason(dto.getReason())
                         .build());
+                teacherDetailRepository.delete(teacherDetail);
             }
         }
     }
