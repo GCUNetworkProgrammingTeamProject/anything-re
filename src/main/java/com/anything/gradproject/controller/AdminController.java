@@ -118,20 +118,16 @@ public class AdminController {
     public ResponseEntity<String> selectMainAdvers(@RequestBody AdvertiseRequestDto dto) {
         try {
             Advertisement advertisements = advertisementRepository.findByadverSeq(dto.getAdverSeq());
-            if(dto.getIsBanner() == 0){
+            if(dto.getIsBanner() == 0)
                 advertisements.setBanner(false);
-            }
-
-            else if (dto.getIsBanner() == 1) {
+            else if (dto.getIsBanner() == 1)
                 advertisements.setBanner(true);
-            }
-
+            advertisementRepository.save(advertisements);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 에러 메세지 출력
         }
         return ResponseEntity.status(HttpStatus.OK).body("배너 광고 변경 완료");
     }
-
     // 강의 목록 출력
     @GetMapping("/admin/lectures")
     public ResponseEntity<?> printLectures(@RequestHeader("Authorization") String token) {
@@ -152,17 +148,22 @@ public class AdminController {
         return ResponseEntity.ok(lecturesList);
     }
 
+
     // 추천 강의 등록
     @PostMapping("/admin/lectures/rec/{lectureSeq}")
     public ResponseEntity<String> addRecLectures(@PathVariable long lectureSeq) {
-        lecturesRepository.findBylectureSeq(lectureSeq).get().setLectureRecommend(true);
+        Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
+        lectures.setLectureRecommend(true);
+        lecturesRepository.save(lectures);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 등록 완료");
     }
 
     // 추천 강의 삭제
     @DeleteMapping("/admin/lectures/rec/{lectureSeq}")
     public ResponseEntity<String> deleteRecLectures(@PathVariable long lectureSeq) {
-        lecturesRepository.findBylectureSeq(lectureSeq).get().setLectureRecommend(false);
+        Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
+        lectures.setLectureRecommend(false);
+        lecturesRepository.save(lectures);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 삭제 완료");
     }
 

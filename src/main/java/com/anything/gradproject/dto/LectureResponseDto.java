@@ -18,6 +18,7 @@ public class LectureResponseDto {
     private String authorName;
     private String authorImageSrc;
     private String category;
+    private boolean lectureRecommend;
 
     @Builder
     public LectureResponseDto(Lectures lectures) {
