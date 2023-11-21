@@ -2,14 +2,8 @@ package com.anything.gradproject.service;
 
 import com.anything.gradproject.dto.AnalysisRequestDto;
 import com.anything.gradproject.dto.AnalysisResponseDto;
-import com.anything.gradproject.entity.Member;
-import com.anything.gradproject.entity.Video;
-import com.anything.gradproject.entity.VideoAnalysis;
-import com.anything.gradproject.entity.VideoAnalysisDetail;
-import com.anything.gradproject.repository.MemberRepository;
-import com.anything.gradproject.repository.VideoAnalysisDetailRepository;
-import com.anything.gradproject.repository.VideoAnalysisRepository;
-import com.anything.gradproject.repository.VideoRepository;
+import com.anything.gradproject.entity.*;
+import com.anything.gradproject.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,11 +21,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AnalysisServiceImpl implements AnalysisService{
+public class AnalysisServiceImpl implements AnalysisService {
 
     private final VideoAnalysisDetailRepository videoAnalysisDetailRepository;
     private final VideoAnalysisRepository videoAnalysisRepository;
-
+    private final PerVideoAnalysisRepository perVideoAnalysisRepository;
+    private final PerVideoAnalysisDetailRepository perVideoAnalysisDetailRepository;
     private final MemberRepository memberRepository;
     private final VideoRepository videoRepository;
 
@@ -54,7 +49,7 @@ public class AnalysisServiceImpl implements AnalysisService{
     @Override
     @Transactional
     public String sendGetRequest(long userSeq, long videoSeq, String recording) {
-        Member member = memberRepository.findByUserSeq(userSeq).orElseThrow(()->new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+        Member member = memberRepository.findByUserSeq(userSeq).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
         Video video = videoRepository.findByVideoSeq(videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
 
         try {
@@ -63,7 +58,7 @@ public class AnalysisServiceImpl implements AnalysisService{
                 VideoAnalysis va = new VideoAnalysis(video, member);
                 videoAnalysisRepository.save(va);
             }
-            VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).orElseThrow(()->new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
+            VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
 
             Mono<Map<Integer, Float>> responseDataMono = webClient
                     .get()
@@ -85,6 +80,7 @@ public class AnalysisServiceImpl implements AnalysisService{
         }
 
     }
+
     @Override
     @Transactional
     public void sendGetRequestAsync(long userSeq, long videoSeq, String recording) {
@@ -101,19 +97,51 @@ public class AnalysisServiceImpl implements AnalysisService{
                 .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
 
 
-
         webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/concentrate") // URL의 기본 경로를 포함하여 경로 설정
                         .queryParam("url", recording) // 쿼리 파라미터 추가
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {
+                })
                 .subscribe(responseData -> {
                     responseData.forEach((key, value) -> {
                         VideoAnalysisDetail vad = new VideoAnalysisDetail(key, value, videoAnalysis);
                         videoAnalysisDetailRepository.save(vad);
                     });
                 });
+    }
+
+    @Override
+    @Transactional
+    public void sendPersonalAnalysis(PersonalVideo personalVideo, String recording) {
+        try {
+            if (perVideoAnalysisRepository.findById(personalVideo.getPersonalVideoSeq()).isEmpty()) {
+                PerVideoAnalysis va = new PerVideoAnalysis(personalVideo.getMember(), personalVideo);
+                perVideoAnalysisRepository.save(va);
+            }
+            PerVideoAnalysis perVideoAnalysis = perVideoAnalysisRepository.findByPersonalVideo_PersonalVideoSeq(personalVideo.getPersonalVideoSeq())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
+
+
+            webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/concentrate") // URL의 기본 경로를 포함하여 경로 설정
+                            .queryParam("url", recording) // 쿼리 파라미터 추가
+                            .build())
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {
+                    })
+                    .subscribe(responseData -> {
+                        responseData.forEach((key, value) -> {
+                            PerVideoAnalysisDetail vad = new PerVideoAnalysisDetail(key, value, perVideoAnalysis);
+                            perVideoAnalysisDetailRepository.save(vad);
+                        });
+                    });
+        } catch (Exception e) {
+            throw new RuntimeException("개인영상 분석중 오류");
+        }
+
     }
 }

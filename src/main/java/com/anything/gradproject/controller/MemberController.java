@@ -420,21 +420,16 @@ public class MemberController {
     @PostMapping("/users/lectures/stream/per") //개인 영상 학습 종료, 정보 저장, ai전송
     public ResponseEntity<String> savePersonalStudy(
             @RequestHeader("Authorization") String token,
-            @RequestBody PersonalVideoRequestDto dto,
-            @RequestBody MultipartFile file) {
-        dto.setMember(memberService.findMemberByToken(token));
+            PersonalVideoRequestDto dto) {
         try {
-            lectureService.savePersonalStudy(dto);
-            long perVideoSeq = lectureService.findPersonalVideoSeq(
-                    memberService.findMemberByToken(token).getUserSeq(),
-                    dto.getPersonalVideoCn()
-            );
-            String recording = fileService.saveFileImg(file);
-
+            dto.setMember(memberService.findMemberByToken(token));
+            PersonalVideo perVideo = lectureService.savePersonalStudy(dto);
+            String recording = fileService.saveFileAnalysis(dto.getFile());
+            analysisService.sendPersonalAnalysis(perVideo, recording);
 
             return ResponseEntity.status(HttpStatus.OK).body("영상정보 저장 완료.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error : " + e.getMessage() + "Error Stack Trace : " + e.getStackTrace());
         }
     }
 

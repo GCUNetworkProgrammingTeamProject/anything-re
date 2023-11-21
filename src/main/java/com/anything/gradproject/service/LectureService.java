@@ -73,12 +73,13 @@ public class LectureService {
     }
 
 
-    public void savePersonalStudy(PersonalVideoRequestDto dto) {
+    @Transactional
+    public PersonalVideo savePersonalStudy(PersonalVideoRequestDto dto) {
         PersonalVideo personalVideo = PersonalVideo.builder()
                 .personalVideoCn(dto.getPersonalVideoCn())
                 .member(dto.getMember())
                         .build();
-        personalVideoRepository.save(personalVideo);
+        return personalVideoRepository.save(personalVideo);
     }
 
     public long findPersonalVideoSeq(long userSeq, String personalVideoCn) {

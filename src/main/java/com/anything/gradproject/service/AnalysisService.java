@@ -3,6 +3,7 @@ package com.anything.gradproject.service;
 import com.anything.gradproject.dto.AnalysisRequestDto;
 import com.anything.gradproject.dto.AnalysisResponseDto;
 import com.anything.gradproject.entity.Member;
+import com.anything.gradproject.entity.PersonalVideo;
 import com.anything.gradproject.entity.VideoAnalysis;
 import com.anything.gradproject.repository.VideoAnalysisRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,4 +21,6 @@ public interface AnalysisService {
     public String sendGetRequest(long userSeq, long videoSeq, String recording);
 
     void sendGetRequestAsync(long userSeq, long videoSeq, String recording);
+
+    void sendPersonalAnalysis(PersonalVideo PerVideoSeq, String recording);
 }

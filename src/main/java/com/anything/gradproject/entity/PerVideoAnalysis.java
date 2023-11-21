@@ -1,10 +1,7 @@
 package com.anything.gradproject.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -35,5 +32,10 @@ public class PerVideoAnalysis {
     @JoinColumn(name = "user_seq")
     private Member member; // fk
 
+    @Builder
+    public PerVideoAnalysis(Member member, PersonalVideo personalVideo) {
+        this.member = member;
+        this.personalVideo = personalVideo;
+    }
 
 }
