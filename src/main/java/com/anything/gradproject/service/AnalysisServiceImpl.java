@@ -58,6 +58,12 @@ public class AnalysisServiceImpl implements AnalysisService {
         if (videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isEmpty()) {
             VideoAnalysis va = new VideoAnalysis(video, member);
             videoAnalysisRepository.save(va);
+        } else if (!videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isEmpty()) {
+            VideoAnalysis deleteVA = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq)
+                    .orElseThrow(() -> new IllegalArgumentException("분석표 존재 x"));
+            videoAnalysisRepository.delete(deleteVA);
+            VideoAnalysis va = new VideoAnalysis(video, member);
+            videoAnalysisRepository.save(va);
         }
         VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq)
                 .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
