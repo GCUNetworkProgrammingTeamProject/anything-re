@@ -32,7 +32,7 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Value("${external.api.url}")
     private String url;
-    WebClient webClient = WebClient.create("url");
+    WebClient webClient = WebClient.create("http://localhost:7000");
 
 
     public List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member) {
@@ -46,40 +46,6 @@ public class AnalysisServiceImpl implements AnalysisService {
         return dtoList;
     }
 
-    @Override
-    @Transactional
-    public String sendGetRequest(long userSeq, long videoSeq, String recording) {
-        Member member = memberRepository.findByUserSeq(userSeq).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
-        Video video = videoRepository.findByVideoSeq(videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
-
-        try {
-            String result;
-            if (videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isEmpty()) {
-                VideoAnalysis va = new VideoAnalysis(video, member);
-                videoAnalysisRepository.save(va);
-            }
-            VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
-
-            Mono<Map<Integer, Float>> responseDataMono = webClient
-                    .get()
-                    .uri(uriBuilder -> uriBuilder.path(url).queryParam("url", recording).build())
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {
-                    });
-
-            responseDataMono.subscribe(responseData -> {
-                for (Map.Entry<Integer, Float> entry : responseData.entrySet()) {
-                    VideoAnalysisDetail vad = new VideoAnalysisDetail(entry.getKey(), entry.getValue(), videoAnalysis);
-                    videoAnalysisDetailRepository.save(vad);
-                }
-            });
-            result = "집중도 저장이 완료되었습니다.";
-            return result;
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-
-    }
 
     @Override
     @Transactional
@@ -100,7 +66,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/concentrate") // URL의 기본 경로를 포함하여 경로 설정
-                        .queryParam("url", recording) // 쿼리 파라미터 추가
+                        .queryParam("videoName", recording) // 쿼리 파라미터 추가
                         .build())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {
@@ -128,7 +94,7 @@ public class AnalysisServiceImpl implements AnalysisService {
             webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/concentrate") // URL의 기본 경로를 포함하여 경로 설정
-                            .queryParam("url", recording) // 쿼리 파라미터 추가
+                            .queryParam("videoName", recording) // 쿼리 파라미터 추가
                             .build())
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {

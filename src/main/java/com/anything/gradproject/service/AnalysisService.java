@@ -18,7 +18,7 @@ import java.util.List;
 public interface AnalysisService {
     public List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member);
 
-    public String sendGetRequest(long userSeq, long videoSeq, String recording);
+//    public String sendGetRequest(long userSeq, long videoSeq, String recording);
 
     void sendGetRequestAsync(long userSeq, long videoSeq, String recording);
 
