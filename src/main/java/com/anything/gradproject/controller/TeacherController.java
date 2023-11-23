@@ -247,4 +247,29 @@ public class TeacherController {
     }
 
 
+    // 파일 다운로드
+    @GetMapping(value = "/lectures/download/{lectureSeq}")
+    public ResponseEntity<Object> imageDownload(@PathVariable long lectureSeq) {
+        try {
+            Lectures lectures = lecturesRepository.findBylectureSeq(lectureSeq).get();
+            List<Video> video = videoRepository.findByLectures(lectures);
+
+
+            String fileName = "/home/t23209/educrat/public/assets/img/courses/" + video.get(0).getVideoLectureData();
+
+            Path filePath = Paths.get(fileName);
+            Resource resource = new InputStreamResource(Files.newInputStream(filePath));
+
+            File file = new File(fileName);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.builder("attachment").filename(file.getName()).build());
+
+            return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
+        } catch(Exception e) {
+            return new ResponseEntity<Object>(null, HttpStatus.CONFLICT);
+        }
+    }
+
+
 }
