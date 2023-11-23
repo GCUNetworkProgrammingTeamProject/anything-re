@@ -259,7 +259,7 @@ public class TeacherController {
             List<Video> video = videoRepository.findByLectures(lectures);
 
 
-            String fileName = "/home/t23209/educrat/public/assets/img/courses/" + video.get(0).getVideoLectureData();
+            String fileName = "/home/t23209/educrat/public/assets/lectureData/" + video.get(0).getVideoLectureData();
 
             Path filePath = Paths.get(fileName);
             Resource resource = new InputStreamResource(Files.newInputStream(filePath));
