@@ -19,7 +19,7 @@ public class VideoAnalysis extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long videoAnalysisSeq; // 분석표 번호
 
-    @OneToMany(mappedBy = "videoAnalysis")
+    @OneToMany(mappedBy = "videoAnalysis", orphanRemoval = true)
     private List<VideoAnalysisDetail> videoAnalysisDetails;
 
     @OneToOne
