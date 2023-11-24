@@ -15,7 +15,6 @@ import java.util.UUID;
 @Service
 public class FileService {
 
-
     @Value("${file.dir.img}")
     private String imgDir;
 
@@ -27,7 +26,6 @@ public class FileService {
 
     @Value("${file.dir.analysisVideo}")
     private String analysisDir;
-
 
     public String saveFile(MultipartFile files, String fileName) throws IOException {
         if (files.isEmpty()) {
@@ -85,12 +83,11 @@ public class FileService {
 
     }
 
-
     public boolean removeFile(String fileName) {
 
         String fileDir = createFileDirByOriginalFileName(fileName);
 
-         return FileSystemUtils.deleteRecursively((new File(fileDir + fileName)));
+        return FileSystemUtils.deleteRecursively((new File(fileDir + fileName)));
     }
 
     public String createFileDirByOriginalFileName(String fileName) {
@@ -131,4 +128,9 @@ public class FileService {
             throw new RuntimeException("파일 업로드 중 오류가 발생했습다.", e);
         }
     }
+
+    public void removeAnlysisVideo(String videoName) {
+
+    }
+
 }

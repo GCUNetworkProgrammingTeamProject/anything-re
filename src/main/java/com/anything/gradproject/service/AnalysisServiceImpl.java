@@ -34,18 +34,18 @@ public class AnalysisServiceImpl implements AnalysisService {
     private String url;
     WebClient webClient = WebClient.create("http://localhost:7000");
 
-
     public List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member) {
-        VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(member.getUserSeq(), videoSeq).orElseThrow(() -> {
-            return new IllegalArgumentException("해당 강의를 듣고 이용해 주세요.");
-        });
-        List<AnalysisResponseDto> dtoList = videoAnalysisDetailRepository.findByVideoAnalysis_VideoAnalysisSeq(videoAnalysis.getVideoAnalysisSeq())
+        VideoAnalysis videoAnalysis = videoAnalysisRepository
+                .findByMember_UserSeqAndVideo_VideoSeq(member.getUserSeq(), videoSeq).orElseThrow(() -> {
+                    return new IllegalArgumentException("해당 강의를 듣고 이용해 주세요.");
+                });
+        List<AnalysisResponseDto> dtoList = videoAnalysisDetailRepository
+                .findByVideoAnalysis_VideoAnalysisSeq(videoAnalysis.getVideoAnalysisSeq())
                 .stream()
                 .map(AnalysisResponseDto::entityToDto)
                 .collect(Collectors.toList());
         return dtoList;
     }
-
 
     @Override
     @Transactional
@@ -67,7 +67,6 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
         VideoAnalysis videoAnalysis = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq)
                 .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
-
 
         webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -93,9 +92,9 @@ public class AnalysisServiceImpl implements AnalysisService {
                 PerVideoAnalysis va = new PerVideoAnalysis(personalVideo.getMember(), personalVideo);
                 perVideoAnalysisRepository.save(va);
             }
-            PerVideoAnalysis perVideoAnalysis = perVideoAnalysisRepository.findByPersonalVideo_PersonalVideoSeq(personalVideo.getPersonalVideoSeq())
+            PerVideoAnalysis perVideoAnalysis = perVideoAnalysisRepository
+                    .findByPersonalVideo_PersonalVideoSeq(personalVideo.getPersonalVideoSeq())
                     .orElseThrow(() -> new IllegalArgumentException("해당 분석표가 존재하지 않습니다."));
-
 
             webClient.get()
                     .uri(uriBuilder -> uriBuilder
@@ -105,6 +104,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {
                     })
+                    .flatMap(null)
                     .subscribe(responseData -> {
                         responseData.forEach((key, value) -> {
                             PerVideoAnalysisDetail vad = new PerVideoAnalysisDetail(key, value, perVideoAnalysis);
@@ -116,4 +116,5 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
 
     }
+
 }
