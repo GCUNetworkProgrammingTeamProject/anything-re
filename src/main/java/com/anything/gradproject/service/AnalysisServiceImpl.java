@@ -104,7 +104,6 @@ public class AnalysisServiceImpl implements AnalysisService {
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<Map<Integer, Float>>() {
                     })
-                    .flatMap(null)
                     .subscribe(responseData -> {
                         responseData.forEach((key, value) -> {
                             PerVideoAnalysisDetail vad = new PerVideoAnalysisDetail(key, value, perVideoAnalysis);

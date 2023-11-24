@@ -18,8 +18,8 @@ public class ChatbotServiceImpl implements ChatbotService {
 
     private final ChatbotLogRepository chatbotLogRepository;
     private final ChatbotLogDetailRepository chatbotLogDetailRepository;
-    private final PerChatbotLogRepository logRepository;
-    private final PerChatbotLogDetailRepository logDetailRepository;
+    private final PerChatbotLogRepository perChatbotLogRepository;
+    private final PerChatbotLogDetailRepository perChatbotLogDetailRepository;
 
     @Override
     public List<ChatbotResponseDto> printChatbot(long videoSeq, Member member) {
@@ -35,9 +35,12 @@ public class ChatbotServiceImpl implements ChatbotService {
 
 
     @Override
-    public List<ChatbotResponseDto> printPerChatbot(long videoSeq, Member member) {
-        long logSeq = logRepository.findByPersonalVideo_PersonalVideoSeqAndMember_UserSeq(videoSeq, member.getUserSeq());
-        List<ChatbotResponseDto> dtoList = logDetailRepository.findByPerChatbotLog_PerChatbotLogSeq(logSeq)
+    public List<ChatbotResponseDto> printPerChatbot(String videoUrl, Member member) {
+        long logSeq = perChatbotLogRepository
+                .findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(videoUrl, member.getUserSeq())
+                .orElseThrow(()-> new IllegalArgumentException("해당 url의 영상에 대한 챗봇 질문내역이 없습니다."))
+                .getPerChatbotLogSeq();
+        List<ChatbotResponseDto> dtoList = perChatbotLogDetailRepository.findByPerChatbotLog_PerChatbotLogSeq(logSeq)
                 .stream()
                 .map(ChatbotResponseDto::perEntityToDto)
                 .collect(Collectors.toList());

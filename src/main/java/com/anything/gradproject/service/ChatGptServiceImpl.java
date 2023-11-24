@@ -1,13 +1,8 @@
 package com.anything.gradproject.service;
 
-import com.anything.gradproject.entity.ChatbotLog;
-import com.anything.gradproject.entity.ChatbotLogDetail;
-import com.anything.gradproject.entity.Member;
-import com.anything.gradproject.entity.Video;
-import com.anything.gradproject.repository.ChatbotLogDetailRepository;
-import com.anything.gradproject.repository.ChatbotLogRepository;
-import com.anything.gradproject.repository.MemberRepository;
-import com.anything.gradproject.repository.VideoRepository;
+import com.anything.gradproject.dto.PerChatDto;
+import com.anything.gradproject.entity.*;
+import com.anything.gradproject.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -21,11 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +27,9 @@ public class ChatGptServiceImpl implements ChatGptService {
     private final ChatbotLogDetailRepository chatbotLogDetailRepository;
     private final ChatbotLogRepository chatbotLogRepository;
     private final VideoRepository videoRepository;
+    private final PerChatbotLogRepository perChatbotLogRepository;
+    private final PerChatbotLogDetailRepository perChatbotLogDetailRepository;
+    private final PersonalVideoRepository personalVideoRepository;
 
     JSONParser parser = new JSONParser();
 
@@ -85,6 +79,53 @@ public class ChatGptServiceImpl implements ChatGptService {
             return e.getMessage();
         }
 
+    }
+
+    @Override
+    public String generatePerChatResponse(PerChatDto dto, Member member) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + apiKey);
+        headers.add("Content-Type", "application/json");
+        // ChatGPT API 엔드포인트 URL
+        String apiUrl = "https://api.openai.com/v1/chat/completions";
+        // 요청 바디 설정
+        String requestBody = "{\"model\": \"gpt-3.5-turbo\",\"messages\":[{\"role\": \"user\", \"content\": \"" + dto.getMessages() + "답변은 한국어로 해줘" + "\"}], \"temperature\": 0.7}";
+        // 메시지와 원하는 응답 길이 설정
+        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+        // Json 파싱
+        String responseBody = response.getBody();
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(responseBody);
+            JSONObject choise = (JSONObject) ((JSONArray) jsonObject.get("choices")).get(0);
+            JSONObject message = (JSONObject) choise.get("message");
+            String content = (String) message.get("content");
+            System.out.println(content);
+            if (perChatbotLogRepository.findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(dto.getVideoUrl(), member.getUserSeq()).isEmpty()) {
+                PersonalVideo video = personalVideoRepository
+                        .findByMember_UserSeqAndPersonalVideoCn(member.getUserSeq(), dto.getVideoUrl())
+                        .orElseThrow(()->new IllegalArgumentException("url을 확인해주세요")) ;
+                PerChatbotLog chatbotLog1 = new PerChatbotLog();
+                chatbotLog1.setMember(member);
+                chatbotLog1.setPersonalVideo(video);
+                PerChatbotLog saveChatbotLog = perChatbotLogRepository.save(chatbotLog1);
+                PerChatbotLogDetail chatbotLogDetail = new PerChatbotLogDetail(dto.getMessages(), content, saveChatbotLog);
+                perChatbotLogDetailRepository.save(chatbotLogDetail);
+
+            } else {
+                PerChatbotLog chatbotLog = perChatbotLogRepository
+                        .findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(dto.getVideoUrl(), member.getUserSeq())
+                        .orElseThrow(()->new IllegalArgumentException("해당 강의에 대한 챗봇로그 정보를 찾을 수 없습니다."));
+                PerChatbotLogDetail chatbotLogDetail1 = new PerChatbotLogDetail(dto.getMessages(), content, chatbotLog);
+                perChatbotLogDetailRepository.save(chatbotLogDetail1);
+            }
+            return content;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
     }
 
 }

@@ -97,12 +97,12 @@ public class MyPageController {
         }
     }
 
-    @GetMapping("/chatbot/per/{perVideoSeq}") // 챗봇 질문내역 조회(개인)
+    @GetMapping("/per/chatbot") // 챗봇 질문내역 조회(개인)
     public ResponseEntity<List<ChatbotResponseDto>> getperChatbot(
-            @PathVariable long perVideoSeq,
-            @RequestHeader("Authorization")String token) {
+            @RequestHeader("Authorization")String token,
+            @RequestBody String videoUrl) {
 
-        List<ChatbotResponseDto> dtoList = chatbotService.printPerChatbot(perVideoSeq, memberService.findMemberByToken(token));
+        List<ChatbotResponseDto> dtoList = chatbotService.printPerChatbot(videoUrl, memberService.findMemberByToken(token));
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
 

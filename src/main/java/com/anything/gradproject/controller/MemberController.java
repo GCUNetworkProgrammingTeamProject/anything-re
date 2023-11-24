@@ -408,7 +408,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/users/{videoSeq}/chatbot") // 챗봇 질문
+    @PostMapping("/users/{videoSeq}/chatbot") // 강의 챗봇 질문
     public ResponseEntity<String> generateChatResponse(@RequestHeader("Authorization") String token,
             @RequestBody ChatGptRequestDto dto, @PathVariable long videoSeq) {
 
@@ -416,6 +416,18 @@ public class MemberController {
                 memberService.findMemberByToken(token));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/users/per/chatbot") // 개인 챗봇 질문
+    public ResponseEntity<String> generatePerChatResponse(@RequestHeader("Authorization") String token,
+                                                       @RequestBody PerChatDto dto) {
+        try {
+            String response = chatGptService.generatePerChatResponse(dto, memberService.findMemberByToken(token));
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
+        }
+
     }
 
     @PostMapping("/users/lectures/stream/per") // 개인 영상 학습 종료, 정보 저장, ai전송
