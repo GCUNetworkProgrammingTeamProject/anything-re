@@ -10,6 +10,7 @@ import lombok.Data;
 public class ChatbotResponseDto {
     private String question;
     private String answer;
+    private long perVideoSeq;
 
 
     @Builder
@@ -21,6 +22,7 @@ public class ChatbotResponseDto {
     public ChatbotResponseDto(PerChatbotLogDetail perChatbotLogDetail) {
         this.question = perChatbotLogDetail.getQuestion();
         this.answer = perChatbotLogDetail.getAnswer();
+        this.perVideoSeq = perChatbotLogDetail.getPerChatbotLog().getPerChatbotLogSeq();
     }
 
     public static ChatbotResponseDto entityToDto(ChatbotLogDetail chatbotLogDetail) {

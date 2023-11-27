@@ -8,5 +8,5 @@ import java.util.List;
 @Service
 public interface ChatbotService {
     public List<ChatbotResponseDto> printChatbot(long videoSeq, Member member);
-    public List<ChatbotResponseDto> printPerChatbot(String videoUrl, Member member);
+    public List<List<ChatbotResponseDto>> printPerChatbot(Member member);
 }

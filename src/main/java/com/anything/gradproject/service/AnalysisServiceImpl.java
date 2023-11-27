@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,6 +46,19 @@ public class AnalysisServiceImpl implements AnalysisService {
                 .map(AnalysisResponseDto::entityToDto)
                 .collect(Collectors.toList());
         return dtoList;
+    }
+    public List<List<AnalysisResponseDto>> getPerAnalysis(Member member) {
+        List<PerVideoAnalysis> perVideoAnalysisList = perVideoAnalysisRepository
+                .findByMember_UserSeq(member.getUserSeq());
+        List<List<AnalysisResponseDto>> dtoLists = new ArrayList<>();
+        for (PerVideoAnalysis videoAnalysis : perVideoAnalysisList) {
+            List<AnalysisResponseDto> dtoList = perVideoAnalysisDetailRepository
+                    .findByPerVideoAnalysis_PerVideoAnalysisSeq(videoAnalysis.getPerVideoAnalysisSeq())
+                    .stream().map(AnalysisResponseDto::perEntityToDto).toList();
+            dtoLists.add(dtoList);
+        }
+
+        return dtoLists;
     }
 
     @Override

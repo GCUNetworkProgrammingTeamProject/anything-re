@@ -35,10 +35,8 @@ spring:
     jpa:
         properties:
             hibernate:
-                #show_sql: true #SQL \uCFFC\uB9AC \uCD9C\uB825
-                format_sql: true #SQL \uD3EC\uB9F7 \uD15C\uD50C\uB9BF
+                format_sql: true
                 show-sql : true
-
         hibernate:
             ddl-auto: update
         database-platform: org.hibernate.dialect.MariaDBDialect

@@ -2,6 +2,7 @@ package com.anything.gradproject.service;
 
 import com.anything.gradproject.dto.ChatbotResponseDto;
 import com.anything.gradproject.entity.Member;
+import com.anything.gradproject.entity.PerChatbotLog;
 import com.anything.gradproject.repository.ChatbotLogDetailRepository;
 import com.anything.gradproject.repository.ChatbotLogRepository;
 import com.anything.gradproject.repository.PerChatbotLogDetailRepository;
@@ -9,6 +10,7 @@ import com.anything.gradproject.repository.PerChatbotLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,16 +37,18 @@ public class ChatbotServiceImpl implements ChatbotService {
 
 
     @Override
-    public List<ChatbotResponseDto> printPerChatbot(String videoUrl, Member member) {
-        long logSeq = perChatbotLogRepository
-                .findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(videoUrl, member.getUserSeq())
-                .orElseThrow(()-> new IllegalArgumentException("해당 url의 영상에 대한 챗봇 질문내역이 없습니다."))
-                .getPerChatbotLogSeq();
-        List<ChatbotResponseDto> dtoList = perChatbotLogDetailRepository.findByPerChatbotLog_PerChatbotLogSeq(logSeq)
-                .stream()
-                .map(ChatbotResponseDto::perEntityToDto)
-                .collect(Collectors.toList());
-        return dtoList;
+    public List<List<ChatbotResponseDto>> printPerChatbot(Member member) {
+        List<Long> logSeqList = perChatbotLogRepository
+                .findByMember_UserSeq(member.getUserSeq()).stream().map(PerChatbotLog::getPerChatbotLogSeq).toList();
+
+        List<List<ChatbotResponseDto>> dtoLists = new ArrayList<>();
+        for (Long logSeq : logSeqList) {
+            dtoLists.add(perChatbotLogDetailRepository.findByPerChatbotLog_PerChatbotLogSeq(logSeq)
+                    .stream()
+                    .map(ChatbotResponseDto::perEntityToDto)
+                    .collect(Collectors.toList()));
+        }
+        return dtoLists;
     }
 
 }

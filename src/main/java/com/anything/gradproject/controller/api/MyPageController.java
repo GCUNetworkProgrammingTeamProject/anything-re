@@ -28,7 +28,6 @@ public class MyPageController {
     private final VideoRepository videoRepository;
     private final AnalysisServiceImpl analysisServiceImpl;
     private final ChatbotService chatbotService;
-
     private final TeacherDetailService teacherDetailService;
     private final FileService fileService;
 
@@ -73,7 +72,7 @@ public class MyPageController {
 
     }
 
-    // 집중도 분석표 조회
+    // 집중도 분석표 조회 (강의)
     @GetMapping("/analysis/{video_seq}")
 
     public ResponseEntity<List<AnalysisResponseDto>> getAnalysis(
@@ -82,6 +81,17 @@ public class MyPageController {
         
         List<AnalysisResponseDto> dtoList = analysisServiceImpl.getAnalysis(video_seq,memberService.findMemberByToken(token));
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+    }
+
+    @GetMapping("/analysis") // 집중도 분석표 조회 (개인)
+    public ResponseEntity<?> getAnalysis(
+            @RequestHeader("Authorization") String token) {
+        try {
+            List<List<AnalysisResponseDto>> dtoLists = analysisServiceImpl.getPerAnalysis(memberService.findMemberByToken(token));
+            return ResponseEntity.status(HttpStatus.OK).body(dtoLists);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/chatbot/{videoSeq}") // 챗봇 질문내역 조회(강의)
@@ -98,12 +108,14 @@ public class MyPageController {
     }
 
     @GetMapping("/per/chatbot") // 챗봇 질문내역 조회(개인)
-    public ResponseEntity<List<ChatbotResponseDto>> getperChatbot(
-            @RequestHeader("Authorization")String token,
-            @RequestBody String videoUrl) {
-
-        List<ChatbotResponseDto> dtoList = chatbotService.printPerChatbot(videoUrl, memberService.findMemberByToken(token));
-        return ResponseEntity.status(HttpStatus.OK).body(dtoList);
+    public ResponseEntity<?> getperChatbot(
+            @RequestHeader("Authorization")String token) {
+        try {
+            List<List<ChatbotResponseDto>> dtoLists = chatbotService.printPerChatbot(memberService.findMemberByToken(token));
+            return ResponseEntity.status(HttpStatus.OK).body(dtoLists);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 

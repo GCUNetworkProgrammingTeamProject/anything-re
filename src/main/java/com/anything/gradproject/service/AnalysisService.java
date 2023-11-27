@@ -22,5 +22,5 @@ public interface AnalysisService {
 
     void sendGetRequestAsync(long userSeq, long videoSeq, String recording);
 
-    void sendPersonalAnalysis(PersonalVideo PerVideoSeq, String recording);
+    void sendPersonalAnalysis(PersonalVideo PerVideo, String recording);
 }
