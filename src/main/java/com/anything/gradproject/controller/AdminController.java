@@ -128,6 +128,26 @@ public class AdminController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("배너 광고 변경 완료");
     }
+
+    // 배너 광고 리스트 출력
+    @GetMapping("/admin/ad/rec")
+    public ResponseEntity<List<Advertisement>> printRecAdvers() {
+
+        List<Advertisement> adversList = advertisementRepository.findAll();
+        List<Advertisement> recAdverList = new ArrayList<>();
+        int count = 0;
+
+        for (Advertisement a: adversList) {
+            if (a.isBanner()) {
+                recAdverList.add(a);
+                count++;
+                if(count > 2)
+                    break;
+            }
+        }
+        return ResponseEntity.ok(recAdverList);
+    }
+
     // 강의 목록 출력
     @GetMapping("/admin/lectures")
     public ResponseEntity<?> printLectures(@RequestHeader("Authorization") String token) {
