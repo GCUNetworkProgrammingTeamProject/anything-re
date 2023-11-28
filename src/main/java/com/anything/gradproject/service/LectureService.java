@@ -75,11 +75,16 @@ public class LectureService {
 
     @Transactional
     public PersonalVideo savePersonalStudy(PersonalVideoRequestDto dto) {
-        PersonalVideo personalVideo = PersonalVideo.builder()
-                .personalVideoCn(dto.getPersonalVideoCn())
-                .member(dto.getMember())
-                        .build();
-        return personalVideoRepository.save(personalVideo);
+        if (personalVideoRepository.findByMember_UserSeqAndPersonalVideoCn(dto.getMember().getUserSeq(), dto.getPersonalVideoCn()).isEmpty()) {
+            PersonalVideo personalVideo = PersonalVideo.builder()
+                    .personalVideoCn(dto.getPersonalVideoCn())
+                    .member(dto.getMember())
+                    .build();
+            return personalVideoRepository.save(personalVideo);
+        } else {
+            return personalVideoRepository.findByMember_UserSeqAndPersonalVideoCn(dto.getMember().getUserSeq(), dto.getPersonalVideoCn()).orElseThrow(() -> new IllegalArgumentException("해당 정보 찾기 오류"));
+        }
+
     }
 
     public long findPersonalVideoSeq(long userSeq, String personalVideoCn) {
