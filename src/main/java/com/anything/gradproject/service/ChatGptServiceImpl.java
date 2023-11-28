@@ -102,23 +102,30 @@ public class ChatGptServiceImpl implements ChatGptService {
             JSONObject message = (JSONObject) choise.get("message");
             String content = (String) message.get("content");
             System.out.println(content);
-            if (perChatbotLogRepository.findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(dto.getVideoUrl(), member.getUserSeq()).isEmpty()) {
-                PersonalVideo video = personalVideoRepository
-                        .findByMember_UserSeqAndPersonalVideoCn(member.getUserSeq(), dto.getVideoUrl())
-                        .orElseThrow(()->new IllegalArgumentException("url을 확인해주세요")) ;
-                PerChatbotLog chatbotLog1 = new PerChatbotLog();
-                chatbotLog1.setMember(member);
-                chatbotLog1.setPersonalVideo(video);
-                PerChatbotLog saveChatbotLog = perChatbotLogRepository.save(chatbotLog1);
-                PerChatbotLogDetail chatbotLogDetail = new PerChatbotLogDetail(dto.getMessages(), content, saveChatbotLog);
-                perChatbotLogDetailRepository.save(chatbotLogDetail);
+            if (personalVideoRepository.findByMember_UserSeqAndPersonalVideoCn(member.getUserSeq(), dto.getVideoUrl()).isEmpty()) {
+                PersonalVideo video = personalVideoRepository.save(PersonalVideo.builder()
+                        .member(member)
+                        .personalVideoCn(dto.getVideoUrl())
+                        .build());
+                PerChatbotLog saveChatbotLog = perChatbotLogRepository.save(PerChatbotLog.builder()
+                        .member(member)
+                        .personalVideo(video)
+                        .build());
+                perChatbotLogDetailRepository.save(PerChatbotLogDetail.builder()
+                        .perChatbotLog(saveChatbotLog)
+                        .answer(content)
+                        .question(dto.getMessages())
+                        .build());
 
             } else {
                 PerChatbotLog chatbotLog = perChatbotLogRepository
                         .findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(dto.getVideoUrl(), member.getUserSeq())
                         .orElseThrow(()->new IllegalArgumentException("해당 강의에 대한 챗봇로그 정보를 찾을 수 없습니다."));
-                PerChatbotLogDetail chatbotLogDetail1 = new PerChatbotLogDetail(dto.getMessages(), content, chatbotLog);
-                perChatbotLogDetailRepository.save(chatbotLogDetail1);
+                perChatbotLogDetailRepository.save(PerChatbotLogDetail.builder()
+                        .perChatbotLog(chatbotLog)
+                        .answer(content)
+                        .question(dto.getMessages())
+                        .build());
             }
             return content;
 
