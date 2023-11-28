@@ -28,6 +28,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -51,10 +52,10 @@ public class AdminController {
             AdminPurchaseListDto dto = purchaseService.getPurchaseList();
             return ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error : " + e.getMessage() + "\nError Stack Trace : " + e.getStackTrace());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error : " + e.getMessage() + "\nError Stack Trace : " + e.getStackTrace());
         }
     }
-
 
     // 광고 리스트 출력
     @GetMapping("/admin/ad")
@@ -82,13 +83,14 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body("광고 등록 완료");
     }
 
-
     // 광고 수정
     @PutMapping("/admin/ad/{adverSeq}")
-    public ResponseEntity<String> updateAdvers(@PathVariable long adverSeq, AdvertiseFormDto advertiseFormDto) throws IOException {
+    public ResponseEntity<String> updateAdvers(@PathVariable long adverSeq, AdvertiseFormDto advertiseFormDto)
+            throws IOException {
         try {
             Advertisement advertisement = advertisementRepository.findByadverSeq(adverSeq);
-            advertisement.setAdverImage(advertisement.getAdverImage().substring(0, advertisement.getAdverImage().lastIndexOf(".")));
+            advertisement.setAdverImage(
+                    advertisement.getAdverImage().substring(0, advertisement.getAdverImage().lastIndexOf(".")));
             Advertisement.modifyAdvertisement(advertiseFormDto, advertisement);
             String imageName = fileService.saveFile(advertiseFormDto.getAdverImage(), advertisement.getAdverImage());
             advertisement.setAdverImage(imageName);
@@ -118,7 +120,7 @@ public class AdminController {
     public ResponseEntity<String> selectMainAdvers(@RequestBody AdvertiseRequestDto dto) {
         try {
             Advertisement advertisements = advertisementRepository.findByadverSeq(dto.getAdverSeq());
-            if(dto.getIsBanner() == 0)
+            if (dto.getIsBanner() == 0)
                 advertisements.setBanner(false);
             else if (dto.getIsBanner() == 1)
                 advertisements.setBanner(true);
@@ -137,11 +139,11 @@ public class AdminController {
         List<Advertisement> recAdverList = new ArrayList<>();
         int count = 0;
 
-        for (Advertisement a: adversList) {
+        for (Advertisement a : adversList) {
             if (a.isBanner()) {
                 recAdverList.add(a);
                 count++;
-                if(count > 2)
+                if (count > 2)
                     break;
             }
         }
@@ -160,14 +162,12 @@ public class AdminController {
 
     }
 
-
     // 추천 강의 목록 출력
     @GetMapping("/admin/lectures/rec")
     public ResponseEntity<List<Lectures>> printRecLectures() {
         List<Lectures> lecturesList = lecturesRepository.findByLectureRecommend(true);
         return ResponseEntity.ok(lecturesList);
     }
-
 
     // 추천 강의 등록
     @PostMapping("/admin/lectures/rec/{lectureSeq}")
@@ -186,6 +186,7 @@ public class AdminController {
         lecturesRepository.save(lectures);
         return ResponseEntity.status(HttpStatus.CREATED).body("추천 강의 삭제 완료");
     }
+
     @GetMapping("/admin/Teacher") // 강사등록신청 조회
     public ResponseEntity<List<TeacherDetailResponseDto>> getTeacherDetail() {
 
@@ -194,7 +195,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
 
-    @PutMapping("/admin/Teacher") //reason, teacherDetailSeq, status(0,1둘중하나 long 타입) 세개 받아와야함.
+    @PutMapping("/admin/Teacher") // reason, teacherDetailSeq, status(0,1둘중하나 long 타입) 세개 받아와야함.
     public ResponseEntity<String> setTeacherStatus(@RequestBody TeacherDenyDto dto) {
         teacherDetailService.setTeacherDetail(dto);
 
@@ -210,7 +211,8 @@ public class AdminController {
     }
 
     @PatchMapping("/admin/users/{userSeq}")
-    public ResponseEntity<String> adminUpdateMember(@PathVariable long userSeq, @RequestBody MemberUpdateDto dto) throws Exception {
+    public ResponseEntity<String> adminUpdateMember(@PathVariable long userSeq, @RequestBody MemberUpdateDto dto)
+            throws Exception {
         try {
             memberService.partiallyUpdate(dto, userSeq);
             return ResponseEntity.status(HttpStatus.OK).body("정보 수정 완료");
@@ -226,7 +228,4 @@ public class AdminController {
         return result;
     }
 
-
 }
-
-
