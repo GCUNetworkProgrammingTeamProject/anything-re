@@ -55,7 +55,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         for (PerVideoAnalysis videoAnalysis : perVideoAnalysisList) {
             List<AnalysisResponseDto> dtoList = perVideoAnalysisDetailRepository
                     .findByPerVideoAnalysis_PerVideoAnalysisSeq(videoAnalysis.getPerVideoAnalysisSeq())
-                    .stream().map(AnalysisResponseDto::perEntityToDto).toList();
+                    .stream().map((perVideoAnalysisDetail)->AnalysisResponseDto.personal().perVideoAnalysisDetail(perVideoAnalysisDetail).build()).toList();
             dtoLists.add(dtoList);
         }
         return dtoLists;
