@@ -135,7 +135,7 @@ public class AdminController {
     @GetMapping("/admin/ad/rec")
     public ResponseEntity<List<Advertisement>> printRecAdvers() {
 
-        List<Advertisement> AdverList = advertisementRepository.findByBanner(true);
+        List<Advertisement> AdverList = advertisementRepository.findByIsBanner(true);
         List<Advertisement> recAdverList = new ArrayList<>();
         if (AdverList.get(0) != null)
             recAdverList.add(AdverList.get(0));

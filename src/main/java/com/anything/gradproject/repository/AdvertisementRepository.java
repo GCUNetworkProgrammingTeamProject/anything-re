@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface AdvertisementRepository extends JpaRepository<Advertisement, Long> {
     Advertisement findByadverSeq(long adverSeq);
-    List<Advertisement> findByBanner(boolean bol);
+    List<Advertisement> findByIsBanner(boolean bol);
 }
