@@ -4,8 +4,10 @@ import com.anything.gradproject.entity.PerVideoAnalysisDetail;
 import com.anything.gradproject.entity.VideoAnalysisDetail;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class AnalysisResponseDto {
     private int timeline;
     private float concentration;
@@ -30,10 +32,13 @@ public class AnalysisResponseDto {
                 .videoAnalysisDetail(videoAnalysisDetail)
                 .build();
     }
+
     public static AnalysisResponseDto perEntityToDto(PerVideoAnalysisDetail perVideoAnalysisDetail) {
-        return AnalysisResponseDto
-                .personal()
-                .perVideoAnalysisDetail(perVideoAnalysisDetail)
-                .build();
+        AnalysisResponseDto dto = new AnalysisResponseDto();
+        dto.setConcentration(perVideoAnalysisDetail.getConcentration());
+        dto.setTimeline(perVideoAnalysisDetail.getTimeline());
+        dto.setPerVideoSeq(perVideoAnalysisDetail.getPerVideoAnalysis().getPerVideoAnalysisSeq());
+
+        return dto;
     }
 }

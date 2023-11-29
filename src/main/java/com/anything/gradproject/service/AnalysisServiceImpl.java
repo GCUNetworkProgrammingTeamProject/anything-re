@@ -47,16 +47,21 @@ public class AnalysisServiceImpl implements AnalysisService {
                 .collect(Collectors.toList());
         return dtoList;
     }
+
     @Override
     public List<List<AnalysisResponseDto>> getPerAnalysis(Member member) {
+        System.out.println("getper");
         List<PerVideoAnalysis> perVideoAnalysisList = perVideoAnalysisRepository
                 .findByMember_UserSeq(member.getUserSeq());
+        System.out.println("loaded data : " + perVideoAnalysisList.toString());
         List<List<AnalysisResponseDto>> dtoLists = new ArrayList<>();
         for (PerVideoAnalysis videoAnalysis : perVideoAnalysisList) {
             List<AnalysisResponseDto> dtoList = perVideoAnalysisDetailRepository
                     .findByPerVideoAnalysis_PerVideoAnalysisSeq(videoAnalysis.getPerVideoAnalysisSeq())
-                    .stream().map((perVideoAnalysisDetail)->AnalysisResponseDto.personal().perVideoAnalysisDetail(perVideoAnalysisDetail).build()).toList();
+                    .stream().map(AnalysisResponseDto::perEntityToDto).toList();
+            System.out.println("perVideoAD load");
             dtoLists.add(dtoList);
+            System.out.println("add detail");
         }
         return dtoLists;
     }
@@ -75,7 +80,6 @@ public class AnalysisServiceImpl implements AnalysisService {
             videoAnalysisRepository.delete(deleteVA);
         }
         VideoAnalysis videoAnalysis = videoAnalysisRepository.save(new VideoAnalysis(video, member));
-
 
         webClient.get()
                 .uri(uriBuilder -> uriBuilder

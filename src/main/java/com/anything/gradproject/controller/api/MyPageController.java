@@ -87,6 +87,7 @@ public class MyPageController {
     public ResponseEntity<?> getPerAnalysis(
             @RequestHeader("Authorization") String token) {
         try {
+            System.out.println("/per/analysis 요청");
             List<List<AnalysisResponseDto>> dtoLists = analysisServiceImpl.getPerAnalysis(memberService.findMemberByToken(token));
             return ResponseEntity.status(HttpStatus.OK).body(dtoLists);
         } catch (Exception e) {
