@@ -117,16 +117,30 @@ public class ChatGptServiceImpl implements ChatGptService {
                         .question(dto.getMessages())
                         .build());
 
+            }else if (personalVideoRepository.findByMember_UserSeqAndPersonalVideoCn(member.getUserSeq(), dto.getVideoUrl()).isPresent() &&
+                    perChatbotLogRepository.findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(dto.getVideoUrl(), member.getUserSeq()).isEmpty()) {
+                PersonalVideo video = personalVideoRepository.findByMember_UserSeqAndPersonalVideoCn(member.getUserSeq(), dto.getVideoUrl()).get();
+                PerChatbotLog saveChatbotLog = perChatbotLogRepository.save(PerChatbotLog.builder()
+                        .member(member)
+                        .personalVideo(video)
+                        .build());
+                perChatbotLogDetailRepository.save(PerChatbotLogDetail.builder()
+                        .perChatbotLog(saveChatbotLog)
+                        .answer(content)
+                        .question(dto.getMessages())
+                        .build());
+
             } else {
                 PerChatbotLog chatbotLog = perChatbotLogRepository
                         .findByPersonalVideo_PersonalVideoCnAndMember_UserSeq(dto.getVideoUrl(), member.getUserSeq())
-                        .orElseThrow(()->new IllegalArgumentException("해당 강의에 대한 챗봇로그 정보를 찾을 수 없습니다."));
+                        .orElseThrow(() -> new IllegalArgumentException("해당 강의에 대한 챗봇로그 정보를 찾을 수 없습니다."));
                 perChatbotLogDetailRepository.save(PerChatbotLogDetail.builder()
                         .perChatbotLog(chatbotLog)
                         .answer(content)
                         .question(dto.getMessages())
                         .build());
             }
+
             return content;
 
         } catch (ParseException e) {
