@@ -83,7 +83,7 @@ public class MyPageController {
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
 
-    @GetMapping("/analysis/per") // 집중도 분석표 조회 (개인)
+    @GetMapping("/per/analysis") // 집중도 분석표 조회 (개인)
     public ResponseEntity<?> getPerAnalysis(
             @RequestHeader("Authorization") String token) {
         try {

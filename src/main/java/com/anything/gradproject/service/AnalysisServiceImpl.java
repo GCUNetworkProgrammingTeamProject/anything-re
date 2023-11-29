@@ -47,6 +47,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                 .collect(Collectors.toList());
         return dtoList;
     }
+    @Override
     public List<List<AnalysisResponseDto>> getPerAnalysis(Member member) {
         List<PerVideoAnalysis> perVideoAnalysisList = perVideoAnalysisRepository
                 .findByMember_UserSeq(member.getUserSeq());
@@ -57,7 +58,6 @@ public class AnalysisServiceImpl implements AnalysisService {
                     .stream().map(AnalysisResponseDto::perEntityToDto).toList();
             dtoLists.add(dtoList);
         }
-
         return dtoLists;
     }
 

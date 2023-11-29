@@ -16,7 +16,8 @@ import java.util.List;
 
 @Service
 public interface AnalysisService {
-    public List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member);
+    List<AnalysisResponseDto> getAnalysis(long videoSeq, Member member);
+    List<List<AnalysisResponseDto>> getPerAnalysis(Member member);
 
 //    public String sendGetRequest(long userSeq, long videoSeq, String recording);
 
