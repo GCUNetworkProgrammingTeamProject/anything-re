@@ -84,7 +84,7 @@ public class MyPageController {
     }
 
     @GetMapping("/analysis/per") // 집중도 분석표 조회 (개인)
-    public ResponseEntity<?> getAnalysis(
+    public ResponseEntity<?> getPerAnalysis(
             @RequestHeader("Authorization") String token) {
         try {
             List<List<AnalysisResponseDto>> dtoLists = analysisServiceImpl.getPerAnalysis(memberService.findMemberByToken(token));
