@@ -5,8 +5,10 @@ import com.anything.gradproject.entity.PerChatbotLogDetail;
 import com.anything.gradproject.entity.VideoAnalysisDetail;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ChatbotResponseDto {
     private String question;
     private String answer;
@@ -18,12 +20,6 @@ public class ChatbotResponseDto {
         this.question = chatbotLogDetail.getQuestion();
         this.answer = chatbotLogDetail.getAnswer();
     }
-    @Builder(builderMethodName = "personal")
-    public ChatbotResponseDto(PerChatbotLogDetail perChatbotLogDetail) {
-        this.question = perChatbotLogDetail.getQuestion();
-        this.answer = perChatbotLogDetail.getAnswer();
-        this.perVideoSeq = perChatbotLogDetail.getPerChatbotLog().getPerChatbotLogSeq();
-    }
 
     public static ChatbotResponseDto entityToDto(ChatbotLogDetail chatbotLogDetail) {
         return ChatbotResponseDto
@@ -32,9 +28,10 @@ public class ChatbotResponseDto {
                 .build();
     }
     public static ChatbotResponseDto perEntityToDto(PerChatbotLogDetail perChatbotLogDetail) {
-        return ChatbotResponseDto
-                .personal()
-                .perChatbotLogDetail(perChatbotLogDetail)
-                .build();
+        ChatbotResponseDto dto = new ChatbotResponseDto();
+        dto.setAnswer(perChatbotLogDetail.getAnswer());
+        dto.setQuestion(perChatbotLogDetail.getQuestion());
+        dto.setPerVideoSeq(perChatbotLogDetail.getPerChatbotLog().getPerChatbotLogSeq());
+        return dto;
     }
 }

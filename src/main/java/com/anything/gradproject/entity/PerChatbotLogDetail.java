@@ -18,6 +18,7 @@ public class PerChatbotLogDetail {
     private long perChatbotLogDetailSeq;
 
     private String question;
+    @Lob
     private String answer;
 
     @ManyToOne

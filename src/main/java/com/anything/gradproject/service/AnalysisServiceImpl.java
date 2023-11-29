@@ -50,18 +50,14 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Override
     public List<List<AnalysisResponseDto>> getPerAnalysis(Member member) {
-        System.out.println("getper");
         List<PerVideoAnalysis> perVideoAnalysisList = perVideoAnalysisRepository
                 .findByMember_UserSeq(member.getUserSeq());
-        System.out.println("loaded data : " + perVideoAnalysisList.toString());
         List<List<AnalysisResponseDto>> dtoLists = new ArrayList<>();
         for (PerVideoAnalysis videoAnalysis : perVideoAnalysisList) {
             List<AnalysisResponseDto> dtoList = perVideoAnalysisDetailRepository
                     .findByPerVideoAnalysis_PerVideoAnalysisSeq(videoAnalysis.getPerVideoAnalysisSeq())
                     .stream().map(AnalysisResponseDto::perEntityToDto).toList();
-            System.out.println("perVideoAD load");
             dtoLists.add(dtoList);
-            System.out.println("add detail");
         }
         return dtoLists;
     }
@@ -74,12 +70,13 @@ public class AnalysisServiceImpl implements AnalysisService {
         Video video = videoRepository.findByVideoSeq(videoSeq)
                 .orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
 
-        if (!videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isEmpty()) {
+        if (videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq).isPresent()) {
             VideoAnalysis deleteVA = videoAnalysisRepository.findByMember_UserSeqAndVideo_VideoSeq(userSeq, videoSeq)
                     .orElseThrow(() -> new IllegalArgumentException("분석표 존재 x"));
             videoAnalysisRepository.delete(deleteVA);
         }
         VideoAnalysis videoAnalysis = videoAnalysisRepository.save(new VideoAnalysis(video, member));
+
 
         webClient.get()
                 .uri(uriBuilder -> uriBuilder
