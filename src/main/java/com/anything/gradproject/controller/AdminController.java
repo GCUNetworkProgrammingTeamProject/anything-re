@@ -135,18 +135,14 @@ public class AdminController {
     @GetMapping("/admin/ad/rec")
     public ResponseEntity<List<Advertisement>> printRecAdvers() {
 
-        List<Advertisement> adversList = advertisementRepository.findAll();
+        List<Advertisement> AdverList = advertisementRepository.findByBanner(true);
         List<Advertisement> recAdverList = new ArrayList<>();
-        int count = 0;
-
-        for (Advertisement a : adversList) {
-            if (a.isBanner()) {
-                recAdverList.add(a);
-                count++;
-                if (count > 2)
-                    break;
-            }
-        }
+        if (AdverList.get(0) != null)
+            recAdverList.add(AdverList.get(0));
+        if (AdverList.get(1) != null)
+            recAdverList.add(AdverList.get(1));
+        if (AdverList.get(2) != null)
+            recAdverList.add(AdverList.get(2));
         return ResponseEntity.ok(recAdverList);
     }
 
