@@ -41,6 +41,7 @@ public class Member extends BaseEntity {
 
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({ "member"})
     private List<TeacherDetail> teacherDetail;
 
 
