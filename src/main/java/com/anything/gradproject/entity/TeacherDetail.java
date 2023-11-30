@@ -28,6 +28,7 @@ public class TeacherDetail  {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 객체가 삭제되면 같이 삭제됨
+    @JsonIgnoreProperties({ "member"})
     @JoinColumn(name = "user_seq")
     private Member member;
 
